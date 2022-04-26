@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- 메이븐 버전 -->
+  <modelVersion>4.0.0</modelVersion>
+  <!-- default 패키지 명-->
+  <groupId>co.micol.prj</groupId> 
+  <artifactId>20220426</artifactId>
+  <!-- 버전 -->
+  <version>0.0.1-SNAPSHOT</version> 
+  
+  <!-- pom.xml 내부에서 사용할 변수설정-->
+  <properties>
+  	<!-- 자바 버전 입력 -->
+  	<maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+  
+  <!-- 외부 라이브러리 의존성을 주입하는 곳 -->
+  <dependencies>
+	  <!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
+	<dependency>
+	    <groupId>com.oracle.database.jdbc</groupId>
+	    <artifactId>ojdbc8</artifactId>
+	    <version>19.12.0.0</version>
+	</dependency>
+
+  </dependencies>
+  
+  <!-- 빌드 옵션을 정의하는 곳 -->
+  <build>
+  	<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- 메인 클래스의 위치 -->
+                                    <mainClass>co.micol.prj.MainApp</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+  </build>
+</project>
