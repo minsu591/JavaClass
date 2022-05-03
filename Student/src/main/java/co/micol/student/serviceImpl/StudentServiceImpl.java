@@ -61,6 +61,7 @@ public class StudentServiceImpl implements StudentService {
 				vo.setAddress(rs.getString("address"));
 				vo.setTel(rs.getString("tel"));
 			}
+			
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
