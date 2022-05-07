@@ -16,8 +16,8 @@ public class MainApp
         
         //게임 시작
         if(!StringUtils.isEmpty(loginAccount.getAccId())) {
-//        	ConsolePrintService cps = new ConsolePrintService();
-//    		cps.consolePrintRun();
+        	ConsolePrintService cps = new ConsolePrintService();
+    		cps.consolePrintRun();
         }
         	
     }

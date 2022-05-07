@@ -3,6 +3,7 @@ package co.mia.farm.account;
 public interface AccountService {
 	int accountInsert(AccountVO vo); //회원가입
 	AccountVO accountLogin(AccountVO vo); //로그인
+	
 	int characterInsert(CharacterVO chVO); //캐릭터 넣기
 	boolean characterCheck(AccountVO vo); //캐릭터 처음 생성하는지 확인
 	

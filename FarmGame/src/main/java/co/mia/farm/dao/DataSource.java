@@ -23,7 +23,7 @@ public class DataSource { //연결용
 	
 	private void dbConfig() { //properties 자료 가져오기
 		Properties properties = new Properties();
-		String resource = getClass().getResource("/farmdb.properties").getPath();
+		String resource = getClass().getResource("/homedb.properties").getPath();
 		
 		try {
 			properties.load(new FileInputStream(resource));

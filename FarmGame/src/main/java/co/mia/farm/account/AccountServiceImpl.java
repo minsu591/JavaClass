@@ -24,7 +24,7 @@ public class AccountServiceImpl implements AccountService {
 		AccountVO checkVO = accountCheck(vo);
 		if (StringUtils.isEmpty(checkVO.getAccId())) {
 			// 회원 가입 진행
-			String sql = "INSERT INTO ACCOUNT_VO VALUES(ACCOUNT_VO_ID_SEQ.NEXTVAL, ?, ?, ?)";
+			String sql = "INSERT INTO ACCOUNTS VALUES(?, ?, ?)";
 			try {
 				conn = dao.getConnection(); // 연결
 				psmt = conn.prepareStatement(sql);
@@ -63,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
 
 	private AccountVO accountCheck(AccountVO vo) { // db에 아이디가 있으면 db의 data를 가져옴
 		AccountVO checkVO = new AccountVO();
-		String sql = "SELECT * FROM ACCOUNT_VO WHERE ACC_ID = ?";
+		String sql = "SELECT * FROM ACCOUNTS WHERE ACC_ID = ?";
 		try {
 			conn = dao.getConnection(); // connection 열기
 			psmt = conn.prepareStatement(sql);
@@ -82,16 +82,15 @@ public class AccountServiceImpl implements AccountService {
 		return checkVO;
 	}
 
-	public int characterInsert(CharacterVO chVO) { // accountVO 넣으면 캐릭터 생성
+	public int characterInsert(CharacterVO chVO) {
 		int n = 0;
-		CharacterVO cvo = new CharacterVO();
-		String sql = "INSERT INTO ADMIN.CH_VO VALUES(?,?,?,DEFAULT,DEFAULT,DEFAULT,DEFAULT)";
+		String sql = "INSERT INTO CHARACTERS VALUES(?,?,?,DEFAULT,DEFAULT,DEFAULT,DEFAULT)";
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, chVO.getAcc_id());
-			psmt.setString(2, chVO.getFarm_name());
-			psmt.setString(3, chVO.getUser_nickname());
+			psmt.setString(1, chVO.getAccId());
+			psmt.setString(2, chVO.getFarmName());
+			psmt.setString(3, chVO.getUserNickname());
 			n = psmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -104,23 +103,19 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	public boolean characterCheck(AccountVO vo) { // 현재 로그인한 아이디에 캐릭터가 있으면 false, 없으면 true;
-		String sql = "SELECT * FROM CH_VO WHERE ACC_ID = ?";
+		String sql = "SELECT * FROM CHARACTERS WHERE ACC_ID = ?";
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, vo.getAccId());
-			System.out.println(vo.getAccId());
 			rs = psmt.executeQuery();
 			if (rs.next()) {
-				if (StringUtils.isEmpty(rs.getString("acc_id"))) {
-					System.out.println(rs.getString("acc_id"));
-					System.out.println("이미 캐릭터가 있다.");
-					makeCharacter = false;
-				} else {
-					System.out.println("캐릭터를 생성해라");
-					makeCharacter = true;
-				}
-
+				//기존 캐릭터 초기화 기능 추가하기
+				System.out.println("기존 캐릭터로 로그인합니다...");
+				makeCharacter = false;
+			}else {
+				System.out.println("새 캐릭터를 생성합니다...");
+				makeCharacter = true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
