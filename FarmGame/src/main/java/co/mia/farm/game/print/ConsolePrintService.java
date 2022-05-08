@@ -2,22 +2,23 @@ package co.mia.farm.game.print;
 
 import java.util.Scanner;
 
+import co.mia.farm.GameMenu;
+import co.mia.farm.LoginMenu;
+
 public class ConsolePrintService {
 	private Scanner scn = new Scanner(System.in);
 	private int wSize = 25;
 	private int hSize = 15;
 	private int[][] printGame = new int[hSize][wSize];
-	private int x = 0;
-	private int y = 0;
+	public static int userX = 0;
+	public static int userY = 0;
 	private String person = "(º-º)";
-	private boolean playing = true;
 
 	public void consolePrintRun() {
-		while (playing) {
-			clearScreen();
-			arrPrint();
-			inputKeyboard();
-		}
+		clearScreen();
+		titlePrint();
+		arrPrint();
+		inputKeyboard();
 	}
 
 	private void arrPrint() {
@@ -31,10 +32,10 @@ public class ConsolePrintService {
 				if (j == 0) {
 					System.out.print("|");
 				}
-				if(x==j && y==i) {
-					System.out.printf("%2s",person);
-				}else {
-					System.out.printf("%2d", printGame[i][j]);					
+				if (userX == j && userY == i) {
+					System.out.printf("%2s", person);
+				} else {
+					System.out.printf("%2d", printGame[i][j]);
 				}
 				if (j == wSize - 1) {
 					System.out.print("|");
@@ -52,42 +53,59 @@ public class ConsolePrintService {
 		System.out.print("(a : 왼쪽 / d: 오른쪽 / w : 위 / x : 아래 /quit : 종료) >>> ");
 		String input = scn.next();
 		if (input.equals("a")) {
-			System.out.println("왼쪽");
-			x--;
+			userX--;
 		} else if (input.equals("d")) {
-			System.out.println("오른쪽");
-			x++;
+			userX++;
 		} else if (input.equals("w")) {
-			System.out.println("위");
-			y--;
+			userY--;
 		} else if (input.equals("x")) {
-			System.out.println("아래");
-			y++;
+			userY++;
 		} else if (input.equals("quit")) {
-			playing = false;
+			GameMenu.checkLogin = false;
 		}
-		
+
 		else {
 			System.out.println("다시 입력");
 		}
 
 		// x,y가 범위를 벗어났을 때
-		if (x < 0) { // 왼쪽 오버
-			x++;
-		} else if (x > wSize - 1) { // 오른쪽 오버
-			x--;
-		} else if (y < 0) { // 위쪽 오버
-			y++;
-		} else if (y > hSize - 1) {
-			y--;
+		if (userX < 0) { // 왼쪽 오버
+			userX++;
+		} else if (userX > wSize - 1) { // 오른쪽 오버
+			userX--;
+		} else if (userY < 0) { // 위쪽 오버
+			userY++;
+		} else if (userY > hSize - 1) {
+			userY--;
 		}
 //		System.out.println("x : " + x + " y :" + y); //확인용
 	}
-	
+
 	private void clearScreen() {
-		for(int i = 0; i<40;i++) {
+		for (int i = 0; i < 40; i++) {
 			System.out.println("");
 		}
+	}
+
+	private void titlePrint() {
+		for (int i = 0; i < wSize; i++) {
+			System.out.printf("%2s", "=");
+		}
+		System.out.println();
+
+		for (int i = 0; i < wSize / 2 - 3; i++) {
+			System.out.printf("%2s", " ");
+		}
+		System.out.printf("◎ %3s의 %s농장 ◎", LoginMenu.loginCharacter.getUserNickname(),
+				LoginMenu.loginCharacter.getFarmName());
+
+		System.out.println();
+		for (int i = 0; i < wSize; i++) {
+			System.out.printf("%2s", "=");
+		}
+		System.out.println();
+		System.out.println();
+
 	}
 
 }
