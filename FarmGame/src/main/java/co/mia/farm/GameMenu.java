@@ -1,71 +1,61 @@
 package co.mia.farm;
 
 import java.util.List;
-import java.util.Scanner;
 
-import co.mia.farm.game.item.ItemServiceImpl;
-import co.mia.farm.game.item.ItemVO;
+import org.apache.commons.lang3.StringUtils;
+
+import co.mia.farm.game.farming.FarmingMenu;
+import co.mia.farm.game.farming.FieldService;
+import co.mia.farm.game.farming.FieldServiceImpl;
+import co.mia.farm.game.farming.InFieldVO;
 import co.mia.farm.game.print.ConsolePrintService;
 
 public class GameMenu {
 	private ConsolePrintService cps = new ConsolePrintService();
+	private FieldService fs = new FieldServiceImpl();
 	public static boolean checkLogin = false;
-	private Scanner scn = new Scanner(System.in);
-	private String ans;
-	private ItemServiceImpl is = new ItemServiceImpl();
-	private List<ItemVO> userItems;
-
-	private List<ItemVO> itemsPrint() { // 프린트할 때 1번부터 시작하게
-		userItems = is.itemSelect();
-		System.out.printf("======= %s의 아이템 List =======\n", LoginMenu.loginCharacter.getUserNickname());
-		for (int i = 0; i < userItems.size(); i++) {
-			System.out.printf("%s번, [%s : %d개]\n", i + 1, userItems.get(i).getItemName(),
-					userItems.get(i).getItemCnt());
-		}
-		System.out.println("=================================");
-		return userItems;
-	}
+	private FarmingMenu fm = new FarmingMenu();
+	private InFieldVO myField = new InFieldVO();
 
 	public void run() {
-//		if(!StringUtils.isEmpty(LoginMenu.loginAccount.getAccId())){
-//			checkLogin = true;
-//        }
-		while (true) {
+		//기본 설정
+		ConsolePrintService.setBasicArray(); //필드 ' '으로 구성
+		if (!StringUtils.isEmpty(LoginMenu.loginAccount.getAccId())) {
+			checkLogin = true;
+		}
+		
+		
+		List<InFieldVO> myFields = fs.fieldSelect();
+		for(InFieldVO i : myFields) {
+			if(i.getItemId()%2==1) {
+				System.out.printf("[%d,%d] 좌표의 농작물이 썩었습니다...",i.getFieldX(),i.getFieldY());
+				fs.fieldUpdateZero(i);
+			}
+		}
+		StaticMenu.waitTime(2000);
+		while (true) { // checkLogin으로 변경하기
 			cps.consolePrintRun();
 
-			// 농작물 심을 수 있는 위치로 오면
-			if (ConsolePrintService.userX == 3 && ConsolePrintService.userY == 0) {
-				System.out.print("농작물을 심으시겠어요? (y/n) >>> ");
-				try {
-					ans = scn.next();
-				} catch (Exception e) {
-					System.out.println("입력이 잘못됐습니다. 다시 입력바랍니다...");
-					scn.next();
-				}
-				if (ans.equalsIgnoreCase("y")) {
-					itemsPrint(); // 아이템창에 농작물 프린트
-					System.out.print("심을 농작물의 번호를 입력해주세요 >>>");
-					int ans = scn.nextInt();
-					if (ans > 0 && ans < userItems.size() + 1) {
-						System.out.printf("%s을(를) 심을게요!", userItems.get(ans).getItemName());
-						is.itemUpdate(userItems.get(ans).getItemName(), userItems.get(ans).getItemCnt()-1);
+			
+			//이동
+			myField = fm.checkMyField();
+			if (myField.getFieldX() == -1 && myField.getFieldY() == -1 && myField.getItemId() == -1) { // 내 위치가 농장필드가 아니면
+				
+			}else { //농장 필드면?
+				if (myField.getItemId() == 0) { // 농장이 비어있음
+					fm.farming(myField);
+				} else { // 농장이 차있음
+					if (myField.getItemId() % 2 == 0) { // 씨앗
+						fm.harvesting(myField);
+					} else {
+						System.out.println("아직 덜 자랐습니다... 남은 시간 : ");
 						
-
-						// 해당 위치에 농작물 심기 + multiThread진행
-						// 아이템 창에서 농작물 하나 빼기
-						System.out.println("심기 완료!");
-					}else {
-						System.out.println("선택한 농작물이 존재하지 않습니다. 다시 선택해주세요...");
+						StaticMenu.waitTime(1000);
 					}
-
-					
-					break;
-				} else {
-					System.out.println("농작물 심기를 취소했습니다.");
-					scn.next();
 				}
-
 			}
+
+
 
 		}
 

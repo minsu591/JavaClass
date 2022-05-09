@@ -1,24 +1,58 @@
 package co.mia.farm.game.print;
 
+import java.util.List;
 import java.util.Scanner;
 
 import co.mia.farm.GameMenu;
 import co.mia.farm.LoginMenu;
+import co.mia.farm.StaticMenu;
+import co.mia.farm.game.farming.FieldServiceImpl;
+import co.mia.farm.game.farming.InFieldVO;
+import co.mia.farm.game.item.ItemService;
+import co.mia.farm.game.item.ItemServiceImpl;
+import co.mia.farm.game.item.ItemVO;
 
 public class ConsolePrintService {
 	private Scanner scn = new Scanner(System.in);
-	private int wSize = 25;
-	private int hSize = 15;
-	private int[][] printGame = new int[hSize][wSize];
+	private ItemService is = new ItemServiceImpl();
+	private final static int wSize = 25;
+	private final static int hSize = 15;
+	public static String[][] printGame = new String[hSize][wSize];
 	public static int userX = 0;
 	public static int userY = 0;
 	private String person = "(º-º)";
+	
 
 	public void consolePrintRun() {
 		clearScreen();
 		titlePrint();
+		setFieldArray();
 		arrPrint();
 		inputKeyboard();
+	}
+
+	public static void setBasicArray() {
+		for (int i = 0; i < hSize; i++) {
+			for (int j = 0; j < wSize; j++) {
+				printGame[i][j] = "□";
+			}
+		}
+	}
+
+	private void setFieldArray() {
+		FieldServiceImpl fsi = new FieldServiceImpl();
+		List<InFieldVO> myFields = fsi.fieldSelect();
+		
+		for (InFieldVO i : myFields) {
+			if (i.getItemId() == 0) { // 비어있다
+				printGame[i.getFieldY()][i.getFieldX()] = "#";
+			} else if (i.getItemId() % 2 == 1) {
+				printGame[i.getFieldY()][i.getFieldX()] = "Y";
+			} else if (i.getItemId() % 2 == 0) {
+				printGame[i.getFieldY()][i.getFieldX()] = "O";
+			}
+		}
+		printGame[userY][userX] = person;
 	}
 
 	private void arrPrint() {
@@ -32,11 +66,7 @@ public class ConsolePrintService {
 				if (j == 0) {
 					System.out.print("|");
 				}
-				if (userX == j && userY == i) {
-					System.out.printf("%2s", person);
-				} else {
-					System.out.printf("%2d", printGame[i][j]);
-				}
+				System.out.printf("%2s", printGame[i][j]);
 				if (j == wSize - 1) {
 					System.out.print("|");
 				}
@@ -47,10 +77,11 @@ public class ConsolePrintService {
 			System.out.printf("%2s", "ㅡ");
 		}
 		System.out.println();
+		printGame[userY][userX] = "□";
 	}
 
 	private void inputKeyboard() {
-		System.out.print("(a : 왼쪽 / d: 오른쪽 / w : 위 / x : 아래 /quit : 종료) >>> ");
+		System.out.print("(a : 왼쪽 / d: 오른쪽 / w : 위 / x : 아래 / i : 아이템창 열기 / quit : 종료) >>> ");
 		String input = scn.next();
 		if (input.equals("a")) {
 			userX--;
@@ -62,6 +93,12 @@ public class ConsolePrintService {
 			userY++;
 		} else if (input.equals("quit")) {
 			GameMenu.checkLogin = false;
+		}else if(input.equals("i")) { //아이템창 열기
+			//아이템창 열기
+			List<ItemVO> myItems = is.itemAllSelect();
+			is.itemsPrint(myItems);
+			scn.next();
+			
 		}
 
 		else {

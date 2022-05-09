@@ -20,7 +20,7 @@ public class LoginMenu {
 		intro();
 		login();
 	}
-
+	
 	private void intro() {// 시작화면
 		// 수정하기_회원테이블 임시데이터
 
@@ -53,11 +53,7 @@ public class LoginMenu {
 			System.out.println("\n당신은 도시 생활에 지쳐, 과거에 즐거운 한 때를 보낸 시골 별장으로 돌아왔습니다.");
 			System.out.println("\n이곳에서 당신의 꿈을 펼쳐보세요!");
 			System.out.println("==========================================================\n");
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			StaticMenu.waitTime(3000);
 		} else {
 			System.out.println("농장 생성에 실패했습니다... 다시 시도해주세요");
 		}
@@ -100,13 +96,9 @@ public class LoginMenu {
 					}
 					loginCharacter = as.characterSelect(loginAccount.getAccId());
 					System.out.println("농장에 입장합니다...");
-					try {
-						for (int i = 3; i > 0; i--) {
-							System.out.println(i);
-							Thread.sleep(1000);
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					for(int i = 1; i<4;i++) {
+						System.out.println(i);
+						StaticMenu.waitTime(1000);
 					}
 
 					break;

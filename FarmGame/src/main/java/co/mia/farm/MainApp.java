@@ -1,9 +1,6 @@
 package co.mia.farm;
 
-import org.apache.commons.lang3.StringUtils;
 
-import co.mia.farm.account.AccountVO;
-import co.mia.farm.game.print.ConsolePrintService;
 
 public class MainApp 
 {
