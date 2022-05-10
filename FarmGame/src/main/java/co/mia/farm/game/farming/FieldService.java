@@ -11,5 +11,8 @@ public interface FieldService {
 	
 	int fieldUpdateZero(InFieldVO myField);
 	
+	//필드 추가
+	int fieldAddHere();
+	
 
 }

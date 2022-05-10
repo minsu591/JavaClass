@@ -6,21 +6,25 @@ import java.util.Scanner;
 import co.mia.farm.GameMenu;
 import co.mia.farm.LoginMenu;
 import co.mia.farm.StaticMenu;
+import co.mia.farm.game.farming.FieldService;
 import co.mia.farm.game.farming.FieldServiceImpl;
 import co.mia.farm.game.farming.InFieldVO;
 import co.mia.farm.game.item.ItemService;
 import co.mia.farm.game.item.ItemServiceImpl;
 import co.mia.farm.game.item.ItemVO;
+import co.mia.farm.game.shop.ShopMenu;
 
 public class ConsolePrintService {
 	private Scanner scn = new Scanner(System.in);
 	private ItemService is = new ItemServiceImpl();
-	private final static int wSize = 25;
-	private final static int hSize = 15;
+	public final static int wSize = 25;
+	public final static int hSize = 15;
 	public static String[][] printGame = new String[hSize][wSize];
 	public static int userX = 0;
 	public static int userY = 0;
 	private String person = "(º-º)";
+	private ShopMenu sm = new ShopMenu();
+	private FieldService fs = new FieldServiceImpl();
 	
 
 	public void consolePrintRun() {
@@ -28,6 +32,7 @@ public class ConsolePrintService {
 		titlePrint();
 		setFieldArray();
 		arrPrint();
+		LoginMenu.loginCharacter.toString();
 		inputKeyboard();
 	}
 
@@ -53,6 +58,7 @@ public class ConsolePrintService {
 			}
 		}
 		printGame[userY][userX] = person;
+		printGame[0][1] = "■"; //상점 위치
 	}
 
 	private void arrPrint() {
@@ -81,7 +87,7 @@ public class ConsolePrintService {
 	}
 
 	private void inputKeyboard() {
-		System.out.print("(a : 왼쪽 / d: 오른쪽 / w : 위 / x : 아래 / i : 아이템창 열기 / quit : 종료) >>> ");
+		System.out.print("(a : 왼쪽 / d: 오른쪽 / w : 위 / x : 아래 / i : 아이템창 열기 / k : 땅 파기 / quit : 종료) >>> ");
 		String input = scn.next();
 		if (input.equals("a")) {
 			userX--;
@@ -97,7 +103,14 @@ public class ConsolePrintService {
 			//아이템창 열기
 			List<ItemVO> myItems = is.itemAllSelect();
 			is.itemsPrint(myItems);
+			System.out.print("종료하고 싶으면 아무 버튼이나 누르세요 >>> ");
 			scn.next();
+		}else if(input.equals("k")) {
+			int n =fs.fieldAddHere();
+			if(n==1) {
+				System.out.println("성공적으로 땅을 팠습니다!");
+				StaticMenu.waitTime(1000);
+			}
 			
 		}
 
@@ -115,10 +128,9 @@ public class ConsolePrintService {
 		} else if (userY > hSize - 1) {
 			userY--;
 		}
-//		System.out.println("x : " + x + " y :" + y); //확인용
 	}
 
-	private void clearScreen() {
+	public static void clearScreen() {
 		for (int i = 0; i < 40; i++) {
 			System.out.println("");
 		}

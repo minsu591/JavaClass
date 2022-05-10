@@ -8,6 +8,7 @@ import java.util.List;
 
 import co.mia.farm.LoginMenu;
 import co.mia.farm.dao.DataSource;
+import co.mia.farm.game.print.ConsolePrintService;
 
 public class FieldServiceImpl implements FieldService{
 	private DataSource dao = DataSource.getInstance();
@@ -69,7 +70,6 @@ public class FieldServiceImpl implements FieldService{
 			psmt.setString(2, LoginMenu.loginAccount.getAccId());
 			psmt.setInt(3, myField.getFieldX());
 			psmt.setInt(4, myField.getFieldY());
-			
 			n = psmt.executeUpdate();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -95,6 +95,24 @@ public class FieldServiceImpl implements FieldService{
 			e.printStackTrace();
 		}finally {
 			close();
+		}
+		return n;
+	}
+
+
+	@Override
+	public int fieldAddHere() {
+		int n = 0;
+		String sql = "INSERT INTO IN_FIELD VALUES(?,?,?,NULL)";
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, LoginMenu.loginAccount.getAccId());
+			psmt.setInt(2, ConsolePrintService.userX);
+			psmt.setInt(3, ConsolePrintService.userY);
+			n = psmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 		return n;
 	}

@@ -32,9 +32,10 @@ public class ItemServiceImpl implements ItemService {
 		}
 	}
 	
+	@Override
 	public void itemsPrint(List<ItemVO> userItems) { // 아이템 창 출력
 		if (userItems.size() == 0) {
-			System.out.println("아이템 창이 비었습니다.");
+			System.out.println("아이템 창이 비었습니다...");
 			StaticMenu.waitTime(1000);
 		} else {
 			System.out.printf("======= %s의 아이템 List =======\n", LoginMenu.loginCharacter.getUserNickname());
@@ -77,8 +78,7 @@ public class ItemServiceImpl implements ItemService {
 			if(rs.next()) {
 				product.setItemId(rs.getInt("item_id"));
 				product.setItemName(rs.getString("item_name"));
-				product.setASell(rs.getInt("a_sell"));
-				product.setAPur(rs.getInt("a_pur"));
+				product.setACost(rs.getInt("a_cost"));
 				product.setALevel(rs.getInt("a_level"));
 				product.setAExplain(rs.getString("a_explain"));
 				product.setCExp(rs.getInt("c_exp"));
@@ -145,7 +145,7 @@ public class ItemServiceImpl implements ItemService {
 	
 
 	@Override
-	public int itemUpdateCnt(ItemVO item, int newCnt) {
+	public int itemUpdateCnt(int itemId, int newCnt) {
 		int n = 0;
 		String sql = "UPDATE ITEMS SET ITEM_CNT = ? WHERE ACC_ID = ? AND ITEM_ID = ?";
 		try {
@@ -153,7 +153,7 @@ public class ItemServiceImpl implements ItemService {
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, newCnt);
 			psmt.setString(2,LoginMenu.loginAccount.getAccId());
-			psmt.setInt(3, item.getItemID());
+			psmt.setInt(3, itemId);
 			n = psmt.executeUpdate();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -184,11 +184,10 @@ public class ItemServiceImpl implements ItemService {
 	public List<ItemVO> itemSeedSelect() {
 		List<ItemVO> haveItems = new ArrayList<ItemVO>();
 		ItemVO vo = new ItemVO();
-		String sql = "SELECT * FROM ITEMS WHERE ACC_ID = ? AND ITEM_ID = (SELECT ITEM_ID FROM ALL_PRODUCTS WHERE ITEM_NAME LIKE '%씨앗')";
+		String sql = "SELECT * FROM ITEMS WHERE MOD(ITEM_ID,2)=1";
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, LoginMenu.loginAccount.getAccId());
 			rs = psmt.executeQuery();
 			while(rs.next()) {
 				vo = new ItemVO();
@@ -202,6 +201,53 @@ public class ItemServiceImpl implements ItemService {
 			close();
 		}
 		return haveItems;
+	}
+
+	@Override
+	public List<AllProductVO> productSelect() {
+		List<AllProductVO> shopItems = new ArrayList<AllProductVO>();
+		AllProductVO apvo;
+		String sql = "SELECT * FROM ALL_PRODUCTS";
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+			while(rs.next()) {
+				apvo = new AllProductVO();
+				apvo.setItemId(rs.getInt("item_id"));
+				apvo.setItemName(rs.getString("item_name"));
+				apvo.setACost(rs.getInt("a_cost"));
+				apvo.setALevel(rs.getInt("a_level"));
+				apvo.setAExplain(rs.getString("a_explain"));
+				apvo.setCExp(rs.getInt("c_exp"));
+				apvo.setCTime(rs.getInt("c_time"));
+				shopItems.add(apvo);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return shopItems;
+	}
+
+	@Override
+	public boolean productPrint(List<AllProductVO> shopItems) {
+		boolean flag = false;
+		if (shopItems.size() == 0) {
+			System.out.println("점검 중입니다. 다음에 이용해주세요.");
+			StaticMenu.waitTime(1000);
+		} else {
+			System.out.printf("\n======= 상점 List =======\n");
+			for (int i = 0; i < shopItems.size(); i++) {
+				System.out.printf("%3d번 : ",i+1);
+				System.out.print(shopItems.get(i).toString());
+				System.out.println();
+			}
+			System.out.println("=================================");
+			flag = true;
+		}
+		return flag;
 	}
 
 

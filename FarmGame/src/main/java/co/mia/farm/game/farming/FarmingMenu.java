@@ -20,8 +20,8 @@ public class FarmingMenu { // 농작 메뉴
 	private FieldServiceImpl fsi = new FieldServiceImpl();
 
 	public void harvesting(InFieldVO myField) {
-		AllProductVO apv = is.itemGetproduct(myField.getItemId());
-		System.out.printf("%s가 다 자랐습니다!\n", apv.getItemName());
+		AllProductVO apv = is.itemGetproduct(myField.getItemId()); //현재 필드에 심겨진 정보 가져와서 변환
+		System.out.printf("%s(이)가 다 자랐습니다!\n", apv.getItemName()); //현재 필드에 심겨진 작물 이름
 		System.out.print("농작물을 수확하시겠어요? (y/n) >>> ");
 		try {
 			ans = scn.next();
@@ -31,15 +31,17 @@ public class FarmingMenu { // 농작 메뉴
 		}
 		if (ans.equalsIgnoreCase("y")) {
 			int n;
-			ItemVO myItem = is.itemOneSelect(apv.getItemId());
-			if (myItem.getItemID() == -1) { // 가방에 없다
+			ItemVO myItem = is.itemOneSelect(apv.getItemId()); //현재 필드에 심겨진 작물이 내 아이템 창에 있는지 확인
+			if (myItem.getItemID() == -1 && myItem.getItemCnt() == -1) { // 가방에 없다
 				n = is.itemInsert(myField.getItemId(), 1);
 			} else { // 가방에 있다
-				n = is.itemUpdateCnt(myItem, myItem.getItemCnt() + 1);
+				n = is.itemUpdateCnt(myItem.getItemID(), myItem.getItemCnt() + 1);
 			}
 			System.out.printf("%s %d개를 수확했습니다!", apv.getItemName(), 1);
 			StaticMenu.waitTime(1000);
 			fsi.fieldUpdateZero(myField);
+			//농작물 수확하면 exp 증가
+			LoginMenu.loginCharacter.setUserExp(LoginMenu.loginCharacter.getUserExp()+apv.getCExp());
 		}
 
 	}
@@ -60,7 +62,7 @@ public class FarmingMenu { // 농작 메뉴
 
 	private void farmingThread(int sec) {
 		InFieldVO myField = checkMyField(); // myField 업로드
-		Runnable mf = new MultiFarming(sec, myField);
+		Runnable mf = new MultiFarmingThread(sec, myField);
 		Thread th = new Thread(mf);
 		th.start();
 	}
@@ -88,18 +90,17 @@ public class FarmingMenu { // 농작 메뉴
 					if (myItem.getItemCnt() <= 1) {
 						is.itemDelete(myItem);
 					} else {
-						is.itemUpdateCnt(userItems.get(ans), myItem.getItemCnt() - 1);
+						is.itemUpdateCnt(userItems.get(ans).getItemID(), myItem.getItemCnt() - 1);
 					}
-
 					for (int i = 0; i < 3; i++) {
-						System.out.println("심는중...");
+						System.out.println("심는중... _〆(ﾟ▽ﾟ*)");
 						StaticMenu.waitTime(1000);
 					}
 					fsi.fieldUpdate(myField, myItem.getItemID()); // 씨앗 심은거 표시
 					System.out.println("심기 완료!");
 					StaticMenu.waitTime(1000);
-					System.out.println(sysItem.getCTime());
 					farmingThread(sysItem.getCTime());
+					
 				} else {
 					System.out.println("선택한 농작물이 존재하지 않습니다. 다시 선택해주세요...");
 					StaticMenu.waitTime(1000);

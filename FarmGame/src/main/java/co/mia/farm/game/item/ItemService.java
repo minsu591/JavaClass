@@ -16,7 +16,7 @@ public interface ItemService {
 	AllProductVO itemGetproduct(int itemId);
 	
 	//5.판매나 구매에서 소지 갯수가 변했을 때 item 수정
-	int itemUpdateCnt(ItemVO item, int newCnt);
+	int itemUpdateCnt(int itemId, int newCnt);
 	
 	//6.씨앗으로 변했을 때 item 수정
 	
@@ -28,6 +28,13 @@ public interface ItemService {
 	
 	//9. 아이템창 조회
 	void itemsPrint(List<ItemVO> userItems);
+	
+	//10. allproduct 전체 리스트 가져오기
+	List<AllProductVO> productSelect();
+	
+	//11. allProduct 전체 조회
+	boolean productPrint(List<AllProductVO> shopItems);
+	
 
 	
 	
