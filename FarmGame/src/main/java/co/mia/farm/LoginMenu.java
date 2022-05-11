@@ -15,10 +15,16 @@ public class LoginMenu {
 	public static AccountVO loginAccount = new AccountVO();
 	public static CharacterVO loginCharacter = new CharacterVO();
 	private AccountService as = new AccountServiceImpl();
+	public static boolean checkGame = false;
+	public static boolean checkLogin = true;
 
 	public void run() {
 		intro();
 		login();
+		if (!StringUtils.isEmpty(LoginMenu.loginAccount.getAccId())) {
+			checkGame = true;
+		}
+		
 	}
 	
 	private void intro() {// 시작화면
@@ -74,8 +80,7 @@ public class LoginMenu {
 			}
 
 			if (menu == 9) { // 종료
-				System.out.println("게임을 종료합니다!");
-				System.out.println("다음에 또 찾아주세요!");
+				System.out.println("로그인 시스템을 종료합니다.");
 				break;
 			} else if (menu == 1) { // 로그인
 				System.out.print("아이디 >>> ");
@@ -99,6 +104,7 @@ public class LoginMenu {
 						System.out.println(i);
 						StaticMenu.waitTime(1000);
 					}
+					checkGame = true;
 
 					break;
 				}
@@ -114,9 +120,9 @@ public class LoginMenu {
 				int check = as.accountInsert(newAcc);
 				// 이미 있는 아이디면 넘어가게
 				if (check == 1) {
-					System.out.println("환영합니다! 회원가입이 완료되었습니다!");
+					System.out.println("환영합니다! 회원가입이 완료되었습니다!\n");
 				} else {
-					System.out.println("이미 존재하는 아이디입니다. 다시 시도해주세요.");
+					System.out.println("이미 존재하는 아이디입니다. 다시 시도해주세요.\n");
 				}
 			}
 		}

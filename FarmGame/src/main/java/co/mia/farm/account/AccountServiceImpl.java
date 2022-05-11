@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
 
+import co.mia.farm.LoginMenu;
 import co.mia.farm.dao.DataSource;
 
 public class AccountServiceImpl implements AccountService {
@@ -169,6 +170,28 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		return chVO;
+	}
+
+	@Override
+	public int characterModify() {
+		CharacterVO ch =LoginMenu.loginCharacter;
+		int n = 0;
+		String sql = "UPDATE CHARACTERS SET USER_HP =?, USER_LEVEL =?,USER_EXP =?,USER_MONEY =? WHERE ACC_ID =?";
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, ch.getUserHp());
+			psmt.setInt(2, ch.getUserLevel());
+			psmt.setInt(3, ch.getUserExp());
+			psmt.setInt(4, ch.getUserMoney());
+			psmt.setString(5, ch.getAccId());
+			n = psmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return n;
 	}
 
 }

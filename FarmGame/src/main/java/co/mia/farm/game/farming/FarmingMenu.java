@@ -4,20 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import co.mia.farm.LoginMenu;
 import co.mia.farm.StaticMenu;
+import co.mia.farm.account.AccountService;
+import co.mia.farm.account.AccountServiceImpl;
 import co.mia.farm.game.item.AllProductVO;
+import co.mia.farm.game.item.ItemService;
 import co.mia.farm.game.item.ItemServiceImpl;
 import co.mia.farm.game.item.ItemVO;
 import co.mia.farm.game.print.ConsolePrintService;
+import co.mia.farm.game.status.StatusService;
 
 public class FarmingMenu { // 농작 메뉴
 	private Scanner scn = new Scanner(System.in);
 	private String ans;
 	private List<ItemVO> userItems = new ArrayList<ItemVO>();
 	private AllProductVO sysItem = new AllProductVO();
-	private ItemServiceImpl is = new ItemServiceImpl();
-	private FieldServiceImpl fsi = new FieldServiceImpl();
+	private ItemService is = new ItemServiceImpl();
+	private FieldService fsi = new FieldServiceImpl();
+	private StatusService ss = new StatusService();
+	private AccountService asi = new AccountServiceImpl();
 
 	public void harvesting(InFieldVO myField) {
 		AllProductVO apv = is.itemGetproduct(myField.getItemId()); //현재 필드에 심겨진 정보 가져와서 변환
@@ -30,18 +35,25 @@ public class FarmingMenu { // 농작 메뉴
 			scn.next();
 		}
 		if (ans.equalsIgnoreCase("y")) {
-			int n;
 			ItemVO myItem = is.itemOneSelect(apv.getItemId()); //현재 필드에 심겨진 작물이 내 아이템 창에 있는지 확인
 			if (myItem.getItemID() == -1 && myItem.getItemCnt() == -1) { // 가방에 없다
-				n = is.itemInsert(myField.getItemId(), 1);
+				is.itemInsert(myField.getItemId(), 1);
 			} else { // 가방에 있다
-				n = is.itemUpdateCnt(myItem.getItemID(), myItem.getItemCnt() + 1);
+				is.itemUpdateCnt(myItem.getItemID(), myItem.getItemCnt() + 1);
 			}
-			System.out.printf("%s %d개를 수확했습니다!", apv.getItemName(), 1);
+			System.out.printf("%s %d개를 수확했습니다!\n", apv.getItemName(), 1);
 			StaticMenu.waitTime(1000);
 			fsi.fieldUpdateZero(myField);
-			//농작물 수확하면 exp 증가
-			LoginMenu.loginCharacter.setUserExp(LoginMenu.loginCharacter.getUserExp()+apv.getCExp());
+			//경험치 증가
+			ss.incExp(10);
+			//hp 감소
+			ss.descHp(10);
+			//캐릭터 정보 db에 저장
+			asi.characterModify();
+		}else {
+			System.out.println("수확을 취소했습니다.");
+			StaticMenu.waitTime(1000);
+			ConsolePrintService.exitIfCancel();
 		}
 
 	}
@@ -60,13 +72,13 @@ public class FarmingMenu { // 농작 메뉴
 		return myField;
 	}
 
-	private void farmingThread(int sec) {
+	public void farmingThread(int sec) {
 		InFieldVO myField = checkMyField(); // myField 업로드
 		Runnable mf = new MultiFarmingThread(sec, myField);
 		Thread th = new Thread(mf);
 		th.start();
 	}
-
+	
 	public void farming(InFieldVO myField) {
 		System.out.print("농작물을 심으시겠어요? (y/n) >>> ");
 		try {
@@ -76,7 +88,8 @@ public class FarmingMenu { // 농작 메뉴
 			scn.next();
 		}
 		if (ans.equalsIgnoreCase("y")) {
-			userItems = is.itemSeedSelect(); // 씨앗 목록 가져오기
+			
+			userItems = is.itemKindSelect(1); // 씨앗 목록 가져오기
 			is.itemsPrint(userItems); // 아이템창 출력
 			if (userItems.size() != 0) {
 				System.out.print("심을 농작물의 번호를 입력해주세요 >>>");
@@ -92,12 +105,17 @@ public class FarmingMenu { // 농작 메뉴
 					} else {
 						is.itemUpdateCnt(userItems.get(ans).getItemID(), myItem.getItemCnt() - 1);
 					}
-					for (int i = 0; i < 3; i++) {
-						System.out.println("심는중... _〆(ﾟ▽ﾟ*)");
-						StaticMenu.waitTime(1000);
-					}
+					System.out.println("심는중... _〆(ﾟ▽ﾟ*)");
+					StaticMenu.waitTime(1000);
+					System.out.println("물 뿌리는 중... ♪(´ε｀*)");
+					StaticMenu.waitTime(1000);
+					System.out.println("예뻐하는 중... (❁´▽`❁)*✲ﾟ*");
+					StaticMenu.waitTime(1000);
 					fsi.fieldUpdate(myField, myItem.getItemID()); // 씨앗 심은거 표시
 					System.out.println("심기 완료!");
+					ss.descHp(5);
+					ss.incExp(5);
+					asi.characterModify();
 					StaticMenu.waitTime(1000);
 					farmingThread(sysItem.getCTime());
 					

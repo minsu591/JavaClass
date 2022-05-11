@@ -33,7 +33,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 	
 	@Override
-	public void itemsPrint(List<ItemVO> userItems) { // 아이템 창 출력
+	public void itemsPrint(List<ItemVO> userItems) {
 		if (userItems.size() == 0) {
 			System.out.println("아이템 창이 비었습니다...");
 			StaticMenu.waitTime(1000);
@@ -42,6 +42,21 @@ public class ItemServiceImpl implements ItemService {
 			for (int i = 0; i < userItems.size(); i++) {
 				AllProductVO sysItem = itemGetproduct(userItems.get(i).getItemID());
 				System.out.printf("%s번, [%s : %d개]\n", i + 1, sysItem.getItemName(), userItems.get(i).getItemCnt());
+			}
+			System.out.println("=================================");
+		}
+	}
+	
+	@Override
+	public void itemsPrint(List<ItemVO> userItems,boolean flag) { // 아이템 창 출력
+		if (userItems.size() == 0) {
+			System.out.println("아이템 창이 비었습니다...");
+			StaticMenu.waitTime(1000);
+		} else {
+			System.out.printf("======= %s의 아이템 List =======\n", LoginMenu.loginCharacter.getUserNickname());
+			for (int i = 0; i < userItems.size(); i++) {
+				AllProductVO sysItem = itemGetproduct(userItems.get(i).getItemID());
+				System.out.printf("%s번, [%s : %d개] || 가격 : %d별\n", i + 1, sysItem.getItemName(), userItems.get(i).getItemCnt(),sysItem.getACost());
 			}
 			System.out.println("=================================");
 		}
@@ -181,13 +196,19 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public List<ItemVO> itemSeedSelect() {
+	public List<ItemVO> itemKindSelect(int num) {
 		List<ItemVO> haveItems = new ArrayList<ItemVO>();
 		ItemVO vo = new ItemVO();
-		String sql = "SELECT * FROM ITEMS WHERE MOD(ITEM_ID,2)=1";
+		String sql = null;
+		if(num == 0) {
+			sql = "SELECT * FROM ITEMS WHERE MOD(ITEM_ID,2)=0 AND ACC_ID = ?";
+		}else if(num == 1) {
+			sql = "SELECT * FROM ITEMS WHERE MOD(ITEM_ID,2)=1 AND ACC_ID = ?";			
+		}
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, LoginMenu.loginAccount.getAccId());
 			rs = psmt.executeQuery();
 			while(rs.next()) {
 				vo = new ItemVO();
@@ -240,8 +261,9 @@ public class ItemServiceImpl implements ItemService {
 		} else {
 			System.out.printf("\n======= 상점 List =======\n");
 			for (int i = 0; i < shopItems.size(); i++) {
+				
 				System.out.printf("%3d번 : ",i+1);
-				System.out.print(shopItems.get(i).toString());
+				shopItems.get(i).toString();
 				System.out.println();
 			}
 			System.out.println("=================================");
@@ -249,6 +271,63 @@ public class ItemServiceImpl implements ItemService {
 		}
 		return flag;
 	}
+	
+	@Override
+	public boolean productPrint(List<AllProductVO> shopItems, String s) { //상점에서 씨앗 프린트
+		boolean flag = false;
+		if (shopItems.size() == 0) {
+			System.out.println("점검 중입니다. 다음에 이용해주세요.");
+			StaticMenu.waitTime(1000);
+		} else {
+			System.out.printf("\n======= 상점 List =======\n");
+			for (int i = 0; i < shopItems.size(); i++) {
+				
+				System.out.printf("%3d번 : ",i+1);
+				shopItems.get(i).toStringForSeed();
+				System.out.println();
+			}
+			System.out.println("=================================");
+			flag = true;
+		}
+		return flag;
+	}
+
+
+	@Override
+	public List<AllProductVO> productKindSelect(int num) {
+		List<AllProductVO> shopItems = new ArrayList<AllProductVO>();
+		AllProductVO apvo = new AllProductVO();
+		String sql = null;
+		if(num == 0) {
+			sql = "SELECT * FROM all_products WHERE MOD(ITEM_ID,2)=0";
+		}else if(num == 1) {
+			sql = "SELECT * FROM all_products where MOD(ITEM_ID,2)=1";			
+		}
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+			while(rs.next()) {
+				apvo = new AllProductVO();
+				apvo.setItemId(rs.getInt("item_id"));
+				apvo.setItemName(rs.getString("item_name"));
+				apvo.setACost(rs.getInt("a_cost"));
+				apvo.setALevel(rs.getInt("a_level"));
+				apvo.setAExplain(rs.getString("a_explain"));
+				apvo.setCExp(rs.getInt("c_exp"));
+				apvo.setCTime(rs.getInt("c_time"));
+				shopItems.add(apvo);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return shopItems;
+	}
+
+
+
 
 
 }

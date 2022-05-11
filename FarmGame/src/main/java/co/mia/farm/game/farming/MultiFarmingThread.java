@@ -2,9 +2,7 @@ package co.mia.farm.game.farming;
 
 import co.mia.farm.StaticMenu;
 import co.mia.farm.game.item.ItemServiceImpl;
-import co.mia.farm.game.item.ItemVO;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @AllArgsConstructor
 public class MultiFarmingThread implements Runnable {
@@ -23,6 +21,7 @@ public class MultiFarmingThread implements Runnable {
 //		ItemVO item = is.itemOneSelect(myField.getItemId());
 		fsi.fieldUpdate(myField, myField.getItemId()-1);
 	}
+
 	
 	
 
