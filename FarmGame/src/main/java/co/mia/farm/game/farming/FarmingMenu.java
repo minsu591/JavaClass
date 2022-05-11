@@ -47,7 +47,7 @@ public class FarmingMenu { // 농작 메뉴
 			//hp 감소
 			ss.descHp(10);
 			//경험치 증가
-			ss.incExp(10);
+			ss.incExp(apv.getCExp());
 			//캐릭터 정보 db에 저장
 			asi.characterModify();
 		}else {
@@ -117,7 +117,6 @@ public class FarmingMenu { // 농작 메뉴
 					ss.incExp(5);
 					asi.characterModify();
 					StaticMenu.waitTime(1000);
-//					farmingThread(sysItem.getCTime());
 					ForFarmingThread fft = new ForFarmingThread();
 					fft.farmingThread(sysItem.getCTime());
 					
