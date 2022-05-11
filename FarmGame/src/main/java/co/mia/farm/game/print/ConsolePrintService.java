@@ -30,11 +30,9 @@ public class ConsolePrintService {
 	public static int userX = 0;
 	public static int userY = 0;
 	private String person = "＆*";
-	private ShopMenu sm = new ShopMenu();
 	private FieldService fs = new FieldServiceImpl();
 	private StatusService ss = new StatusService();
 	private AccountService asi = new AccountServiceImpl();
-	private SecretMoneyService sms;
 
 	public void consolePrintRun() {
 		clearScreen();
@@ -68,7 +66,7 @@ public class ConsolePrintService {
 		}
 		printGame[userY][userX] = person;
 		printGame[0][1] = "■"; // 상점 위치
-		printGame[0][wSize / 2] = "♥";
+		printGame[0][wSize / 2] = "♥"; //집
 		if(SecretMoneyService.smMoney != -1 && SecretMoneyService.smY != -1 && SecretMoneyService.smX != -1) {
 			printGame[SecretMoneyService.smY][SecretMoneyService.smX] = "★";
 		}
@@ -97,7 +95,7 @@ public class ConsolePrintService {
 			System.out.printf("%2s", "ㅡ");
 		}
 		System.out.println();
-		printGame[userY][userX] = "□";
+		printGame[userY][userX] = "□"; //프린트하고 유저가 원래 있던 자리 돌려놓기
 	}
 
 	private void inputKeyboard() {
@@ -128,13 +126,15 @@ public class ConsolePrintService {
 			List<ItemVO> myItems = is.itemAllSelect();
 			is.itemsPrint(myItems);
 			// 아이템 선택
-			System.out.print("(상세보기 : d || 먹기 : e || 종료 : 그 외 버튼) >>> ");
-			String menu = scn.next();
-			System.out.println();
-			if (menu.equals("d")) {
-				itemDetail(myItems);
-			} else if (menu.equals("e")) {
-				itemEating();
+			if(myItems.size()!=0) {
+				System.out.print("(상세보기 : d || 먹기 : e || 종료 : 그 외 버튼) >>> ");
+				String menu = scn.next();
+				System.out.println();
+				if (menu.equals("d")) {
+					itemDetail(myItems);
+				} else if (menu.equals("e")) {
+					itemEating();
+				}
 			}
 
 		} else if (input.equals("k")) {
@@ -168,6 +168,10 @@ public class ConsolePrintService {
 		int n = -1;
 		List<ItemVO> myCrops = is.itemKindSelect(0);
 		is.itemsPrint(myCrops);
+		if(myCrops.size() == 0) {
+			System.out.println("먹을만한게 없습니다...");
+			return;
+		}
 		System.out.print("먹을 아이템을 선택해주세요 >>> ");
 		try {
 			n = scn.nextInt();
@@ -178,7 +182,6 @@ public class ConsolePrintService {
 		if (n > 0 && n < myCrops.size() + 1) {
 			n--;
 			CharacterVO ch = LoginMenu.loginCharacter;
-			AllProductVO itemInfo = is.itemGetproduct(myCrops.get(n).getItemID());
 			for (int i = 0; i < 2; i++) {
 				System.out.println("먹는중...");
 				StaticMenu.waitTime(1000);

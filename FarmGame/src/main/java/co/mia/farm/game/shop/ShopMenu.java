@@ -41,7 +41,7 @@ public class ShopMenu {
 				boolean flag = is.productPrint(shopItems, "상점용 씨앗");
 				if (flag) {
 					asi.characterModify();
-					System.out.print("구매할 물건의 번호를 입력해주세요 >>> ");
+					System.out.print("구매할 물건의 번호를 입력해주세요 (취소 : 0) >>> ");
 					int ans = -1;
 					try {
 						ans = scn.nextInt();
@@ -51,6 +51,11 @@ public class ShopMenu {
 						scn.nextLine();
 						StaticMenu.waitTime(1000);
 					}
+					if(ans == 0) {
+						System.out.println("구매를 취소합니다.");
+						break;
+					}
+					
 					if (ans > 0 && ans < shopItems.size() + 1) {
 						ans--;
 						AllProductVO purItem = shopItems.get(ans);
@@ -101,8 +106,8 @@ public class ShopMenu {
 				break;
 			} else if (menu == 2) {// 판매
 				List<ItemVO> myItems = is.itemAllSelect();
-				is.itemsPrint(myItems, false);
-				System.out.print("무엇을 판매하시겠어요? >>> ");
+				is.itemsPrint(myItems, "상점 판매용 씨앗");
+				System.out.print("무엇을 판매하시겠어요? (취소 : 0) >>> ");
 				int ans = -1;
 				try {
 					ans = scn.nextInt();
@@ -111,6 +116,10 @@ public class ShopMenu {
 					System.out.println("숫자만 입력해주세요...");
 					scn.nextLine();
 					StaticMenu.waitTime(1000);
+				}
+				if(ans == 0) {
+					System.out.println("판매를 취소합니다.");
+					break;
 				}
 				if (ans > 0 && ans < myItems.size() + 1) {
 					ans--;
@@ -127,7 +136,12 @@ public class ShopMenu {
 					}
 
 					if (cnt > 0 && cnt <= item.getItemCnt()) {
-						int addMoney = cnt * itemDetail.getACost();
+						int addMoney;
+						if(itemDetail.getItemId()%2==1 && itemDetail.getItemId() < 300) {
+							addMoney = cnt * itemDetail.getACost()/4;
+						}else {
+							addMoney = cnt * itemDetail.getACost();							
+						}
 						System.out.printf("총 %d별 입니다!\n", addMoney);
 
 						if (item.getItemCnt() - cnt <= 0) { // 아이템 수 변경

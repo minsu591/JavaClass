@@ -50,13 +50,12 @@ public class AccountServiceImpl implements AccountService {
 			if (checkAcc.getAccPw().equals(vo.getAccPw())) {
 				// 로그인 성공!
 				System.out.println("로그인에 성공했습니다.");
-				vo = checkAcc;
 			} else {
 				System.out.println("아이디와 비밀번호가 일치하지 않습니다.");
-				vo = new AccountVO();
+				checkAcc = new AccountVO();
 			}
 		}
-		return vo;
+		return checkAcc;
 
 	}
 
@@ -129,7 +128,7 @@ public class AccountServiceImpl implements AccountService {
 			psmt.setString(1, id);
 			rs = psmt.executeQuery();
 			if(rs.next()) {
-				System.out.println("기존 캐릭터로 들어갑니다...");
+				System.out.println("기존 캐릭터로 입장합니다...");
 				makeCha = false;
 			}else {
 				System.out.println("새 캐릭터를 생성합니다...");

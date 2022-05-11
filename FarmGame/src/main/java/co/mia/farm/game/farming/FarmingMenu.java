@@ -44,10 +44,10 @@ public class FarmingMenu { // 농작 메뉴
 			System.out.printf("%s %d개를 수확했습니다!\n", apv.getItemName(), 1);
 			StaticMenu.waitTime(1000);
 			fsi.fieldUpdateZero(myField);
-			//경험치 증가
-			ss.incExp(10);
 			//hp 감소
 			ss.descHp(10);
+			//경험치 증가
+			ss.incExp(10);
 			//캐릭터 정보 db에 저장
 			asi.characterModify();
 		}else {
@@ -117,7 +117,9 @@ public class FarmingMenu { // 농작 메뉴
 					ss.incExp(5);
 					asi.characterModify();
 					StaticMenu.waitTime(1000);
-					farmingThread(sysItem.getCTime());
+//					farmingThread(sysItem.getCTime());
+					ForFarmingThread fft = new ForFarmingThread();
+					fft.farmingThread(sysItem.getCTime());
 					
 				} else {
 					System.out.println("선택한 농작물이 존재하지 않습니다. 다시 선택해주세요...");

@@ -53,6 +53,7 @@ public class LoginMenu {
 		System.out.print(".oO[농장 이름을 정해주세요] >>> ");
 		newCh.setFarmName(scn.next());
 		int n = as.characterInsert(newCh);
+		
 		if (n == 1) {
 			System.out.println("\n==========================================================");
 			System.out.println("반갑습니다! " + newCh.getUserNickname() + "님!");
@@ -81,6 +82,7 @@ public class LoginMenu {
 
 			if (menu == 9) { // 종료
 				System.out.println("로그인 시스템을 종료합니다.");
+				LoginMenu.checkLogin = false;
 				break;
 			} else if (menu == 1) { // 로그인
 				System.out.print("아이디 >>> ");
@@ -96,8 +98,8 @@ public class LoginMenu {
 					// 캐릭터 확인
 					if (as.characterCheck(loginAccount.getAccId())) {
 						tutorialFarm();
-					} else {
 					}
+					
 					loginCharacter = as.characterSelect(loginAccount.getAccId());
 					System.out.println("농장에 입장합니다...");
 					for(int i = 3; i>0;i--) {

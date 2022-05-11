@@ -28,7 +28,7 @@ public interface ItemService {
 	
 	//9. 아이템창 조회
 	void itemsPrint(List<ItemVO> userItems); //0이면 가격 조회X, 1이면 가격 조회
-	void itemsPrint(List<ItemVO> userItems,boolean flag); //0이면 가격 조회X, 1이면 가격 조회
+	void itemsPrint(List<ItemVO> userItems,String flag); //0이면 가격 조회X, 1이면 가격 조회
 	
 	//10. allproduct 전체 리스트 가져오기
 	List<AllProductVO> productSelect();

@@ -7,7 +7,11 @@ import co.mia.farm.account.AccountServiceImpl;
 import co.mia.farm.game.farming.FarmingMenu;
 import co.mia.farm.game.farming.FieldService;
 import co.mia.farm.game.farming.FieldServiceImpl;
+import co.mia.farm.game.farming.ForFarmingThread;
 import co.mia.farm.game.farming.InFieldVO;
+import co.mia.farm.game.item.AllProductVO;
+import co.mia.farm.game.item.ItemService;
+import co.mia.farm.game.item.ItemServiceImpl;
 import co.mia.farm.game.item.event.SecretMoneyService;
 import co.mia.farm.game.print.ConsolePrintService;
 import co.mia.farm.game.shop.ShopMenu;
@@ -22,10 +26,12 @@ public class GameMenu {
 	private StatusService ss = new StatusService();
 	public static boolean checkGame = true;
 	private AccountService as = new AccountServiceImpl();
+	private SecretMoneyService sms = new SecretMoneyService();
+	private ItemService is = new ItemServiceImpl();
 
 	public void run() {
 		setting();
-		SecretMoneyService sms = new SecretMoneyService();
+		sms.settingMoney();
 		while (LoginMenu.checkGame) {
 			game();
 		}
@@ -34,6 +40,7 @@ public class GameMenu {
 
 	private void setting() { //기본 설정
 		ConsolePrintService.setBasicArray(); // 필드 ' '으로 구성
+		
 		List<InFieldVO> myFields = fs.fieldSelect();
 		for (InFieldVO i : myFields) {
 			if (i.getItemId() != 0) {
@@ -67,9 +74,7 @@ public class GameMenu {
 			System.out.printf("%d별 입니다! 주머니에 넣을게요!",SecretMoneyService.smMoney);
 			LoginMenu.loginCharacter.setUserMoney(LoginMenu.loginCharacter.getUserMoney()+SecretMoneyService.smMoney);
 			as.characterModify();
-			SecretMoneyService.smMoney = -1;
-			SecretMoneyService.smX = -1;
-			SecretMoneyService.smY = -1;
+			sms.resetMoney();
 			StaticMenu.waitTime(1000);
 		} else if (myField.getFieldX() != -1 && myField.getFieldY() != -1 && myField.getItemId() != -1) { // 내 위치가 농장필드가
 																											// 아니면
@@ -79,7 +84,10 @@ public class GameMenu {
 				if (myField.getItemId() % 2 == 0) { // 씨앗
 					fm.harvesting(myField);
 				} else {
-					System.out.println("아직 덜 자랐습니다...");					
+					ForFarmingThread fft = new ForFarmingThread();
+					int leftSec = fft.remainTime();
+					AllProductVO cropInfo = is.itemGetproduct(myField.getItemId());
+					System.out.printf("%s(이)가 아직 덜 자랐습니다... %d초만 기다려주세요...\n",cropInfo.getItemName(),leftSec);				
 					ConsolePrintService.exitIfCancel();
 					StaticMenu.waitTime(1000);
 				}

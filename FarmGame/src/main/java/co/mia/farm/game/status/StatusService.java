@@ -14,6 +14,7 @@ public class StatusService {
 	LevelVO levelInfo;
 	public static boolean threadFlag = true;
 	private AccountService as = new AccountServiceImpl();
+	private SecretMoneyService sms = new SecretMoneyService();
 	
 	//경험치 증가 (max경험치보다 작은지 확인)
 	//max경험치가 되면 level업 + 팝업창 띄워주기
@@ -28,12 +29,21 @@ public class StatusService {
 			StaticMenu.waitTime(1000);
 		}else {
 			myCh.setUserExp(myCh.getUserExp()+addExp - levelInfo.getMaxExp());
-			myCh.setUserLevel(myCh.getUserLevel()+1);
-			System.out.println("축하합니다! 레벨이 올랐습니다!");
-			SecretMoneyService sms = new SecretMoneyService(); //선언하면 비상금에 랜덤값 적용
-			System.out.println("비상금 : " + SecretMoneyService.smMoney);
-			System.out.println("X : " + SecretMoneyService.smX);
-			System.out.println("Y : " + SecretMoneyService.smY);
+			if(myCh.getUserLevel()+1 <=5) { //최대 레벨 설정
+				myCh.setUserLevel(myCh.getUserLevel()+1);
+				myCh.setUserHp(levelInfo.getMaxHp()+20);
+				System.out.println("축하합니다! 레벨이 올랐습니다!");
+				System.out.println("체력도 충전됐어요!");
+			}else {
+				System.out.println("최대 레벨입니다...");
+				myCh.setUserHp(levelInfo.getMaxHp());
+			}
+			as.characterModify();
+			
+
+			//비상금
+			sms.resetMoney();
+			sms.settingMoney();
 			StaticMenu.waitTime(1000);
 		}
 		
