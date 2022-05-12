@@ -117,4 +117,22 @@ public class FieldServiceImpl implements FieldService{
 		return n;
 	}
 
+
+	@Override
+	public int fieldDrop(InFieldVO myField) { //필드 메우기
+		int n = 0;
+		String sql = "DELETE IN_FIELD WHERE ACC_ID = ? AND FIELD_X = ? AND FIELD_Y = ?";
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, LoginMenu.loginAccount.getAccId());
+			psmt.setInt(2, myField.getFieldX());
+			psmt.setInt(3, myField.getFieldY());
+			n = psmt.executeUpdate();					
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return n;
+	}
+
 }

@@ -9,10 +9,13 @@ public interface FieldService {
 	//필드 업데이트
 	int fieldUpdate(InFieldVO myField, int newId);
 	
+	//필드 아이디값 0으로 만들기
 	int fieldUpdateZero(InFieldVO myField);
 	
 	//필드 추가
 	int fieldAddHere();
+	
+	int fieldDrop(InFieldVO myField);
 	
 
 }

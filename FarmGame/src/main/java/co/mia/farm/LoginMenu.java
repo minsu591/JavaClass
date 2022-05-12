@@ -9,6 +9,8 @@ import co.mia.farm.account.AccountService;
 import co.mia.farm.account.AccountServiceImpl;
 import co.mia.farm.account.AccountVO;
 import co.mia.farm.account.CharacterVO;
+import co.mia.farm.game.item.event.TutorialService;
+import co.mia.farm.game.print.ConsolePrintService;
 
 public class LoginMenu {
 	private Scanner scn = new Scanner(System.in);
@@ -17,9 +19,9 @@ public class LoginMenu {
 	private AccountService as = new AccountServiceImpl();
 	public static boolean checkGame = false;
 	public static boolean checkLogin = true;
+	private TutorialService ts = new TutorialService();
 
 	public void run() {
-		intro();
 		login();
 		if (!StringUtils.isEmpty(LoginMenu.loginAccount.getAccId())) {
 			checkGame = true;
@@ -47,12 +49,13 @@ public class LoginMenu {
 		// 없으면
 		CharacterVO newCh = new CharacterVO();
 		newCh.setAccId(loginAccount.getAccId());
-		System.out.println("\n.oO[농장 방문이 처음이신가요? 튜토리얼을 진행합니다.]");
+		System.out.println("\n.oO[농장 방문이 처음이신가요?]");
 		System.out.print(".oO[닉네임을 정해주세요] >>> ");
 		newCh.setUserNickname(scn.next());
 		System.out.print(".oO[농장 이름을 정해주세요] >>> ");
 		newCh.setFarmName(scn.next());
-		int n = as.characterInsert(newCh);
+		int n = as.characterInsert(newCh); //캐릭터 정보 삽입
+		loginCharacter = as.characterSelect(loginAccount.getAccId());
 		
 		if (n == 1) {
 			System.out.println("\n==========================================================");
@@ -64,6 +67,7 @@ public class LoginMenu {
 		} else {
 			System.out.println("농장 생성에 실패했습니다... 다시 시도해주세요");
 		}
+		ts.run();
 	}
 
 	private void login() {
@@ -71,7 +75,8 @@ public class LoginMenu {
 		int menu = -1;
 
 		while (true) {
-			System.out.println("1. 로그인 | 2. 회원가입 | 9. 종료");
+			intro();
+			System.out.println("1. 로그인 | 2. 회원가입 | 3. 회원정보 수정 | 9. 종료");
 
 			try {
 				menu = scn.nextInt();
@@ -98,10 +103,10 @@ public class LoginMenu {
 					// 캐릭터 확인
 					if (as.characterCheck(loginAccount.getAccId())) {
 						tutorialFarm();
+					}else {
+						loginCharacter = as.characterSelect(loginAccount.getAccId());						
 					}
-					
-					loginCharacter = as.characterSelect(loginAccount.getAccId());
-					System.out.println("농장에 입장합니다...");
+					System.out.println("\n농장에 입장합니다...");
 					for(int i = 3; i>0;i--) {
 						System.out.println(i);
 						StaticMenu.waitTime(1000);
@@ -126,6 +131,104 @@ public class LoginMenu {
 				} else {
 					System.out.println("이미 존재하는 아이디입니다. 다시 시도해주세요.\n");
 				}
+			} else if(menu == 3) {
+				System.out.println("[회원 정보 수정을 진행합니다]");
+				System.out.print("수정할 아이디를 입력해주세요 >>> ");
+				String modId = scn.next();
+				System.out.print("수정할 비밀번호를 입력해주세요 >>> ");
+				String modPw = scn.next();
+				AccountVO vo = new AccountVO();
+				vo.setAccId(modId);
+				vo.setAccPw(modPw);
+				vo = as.accountLogin(vo);
+				StaticMenu.waitTime(1500);
+				if(!StringUtils.isEmpty(vo.getAccId())) {
+					while(true) {
+						ConsolePrintService.clearScreen();
+						System.out.println("수정할 정보를 선택해주세요.");
+						System.out.print("[ 1. 비밀번호 | 2. 농장 이름 | 3. 닉네임 | 4. 회원 탈퇴 | 5. 나가기 ] >>> ");
+						try {
+							menu =scn.nextInt();							
+							scn.nextLine();
+						}catch(Exception e) {
+							System.out.println("숫자를 입력해주세요.");
+							scn.nextLine();
+						}
+						if(menu ==1) {
+							System.out.println("비밀번호 변경을 진행합니다.");
+							System.out.print("변경할 비밀번호를 입력해주세요 >>> ");
+							String newPw = scn.next();
+							if(newPw.equals(vo.getAccPw())) {
+								System.out.println("이전 비밀번호와 동일합니다. 다시 시도해주세요...");
+								StaticMenu.waitTime(1000);
+							}else {
+								System.out.println("입력한 비밀번호로 비밀번호 변경을 진행합니다.");
+								vo.setAccPw(newPw);
+								as.accountUpdate(vo);
+								System.out.println("비밀번호 변경이 완료되었습니다.");
+								System.out.println("로그인 페이지로 가서 로그인해주세요.");
+								StaticMenu.waitTime(2000);
+							}
+						}else if(menu ==2 ) {
+							System.out.println("농장 이름 변경을 진행합니다.");
+							CharacterVO myCh = as.characterSelect(vo.getAccId());							
+							if(!StringUtils.isEmpty(myCh.getFarmName())) { //기존 캐릭터 있으면 false
+								System.out.print("변경할 농장 이름을 입력해주세요 >>> ");
+								String name = scn.next();
+								myCh.setFarmName(name);
+								as.characterUpdate(myCh, 0);
+								System.out.println("농장 이름 변경이 완료되었습니다.");
+								System.out.println("로그인 페이지로 가서 로그인해주세요.");
+								StaticMenu.waitTime(2000);
+							}else {
+								System.out.println("로그인해서 캐릭터를 먼저 생성해주세요.");
+								StaticMenu.waitTime(2000);
+							}
+						}else if(menu ==3) {
+							System.out.println("닉네임 변경을 진행합니다.");
+							CharacterVO myCh = as.characterSelect(vo.getAccId());
+							if(!StringUtils.isEmpty(myCh.getFarmName())) { //기존 캐릭터 있으면 false
+								System.out.print("변경할 닉네임을 입력해주세요 >>> ");
+								String name = scn.next();
+								myCh.setUserNickname(name);
+								as.characterUpdate(myCh, 1);
+								System.out.println("닉네임 변경이 완료되었습니다.");
+								System.out.println("로그인 페이지로 가서 로그인해주세요.");
+								StaticMenu.waitTime(2000);
+							}else {
+								System.out.println("로그인해서 캐릭터를 먼저 생성해주세요.");
+								StaticMenu.waitTime(2000);
+							}
+						}else if(menu ==5) {
+							System.out.println("정보 수정을 종료합니다.");
+							ConsolePrintService.clearScreen();
+							break;
+						}else if(menu == 4) {
+							System.out.println("회원 탈퇴를 진행합니다.");
+							System.out.print("탈퇴하면 모든 회원 정보가 사라지고 복구가 불가능합니다. 계속하시겠습니까? (y/n) >>> ");
+							String ans = scn.next();
+							if(ans.equalsIgnoreCase("y")) {
+								System.out.print("회원 탈퇴 진행을 위해 비밀번호를 재확인하겠습니다. 비밀번호를 입력해주세요. >>>");
+								String pw = scn.next();
+								if(pw.equals(vo.getAccPw())) {
+									System.out.println("회원 정보를 삭제합니다.");
+									int n = as.accountDelete(vo);
+									if(n==1) {
+										System.out.println("삭제 완료 되었습니다.");
+										StaticMenu.waitTime(1000);
+										ConsolePrintService.clearScreen();
+										break;
+									}
+								}else {
+									System.out.println("비밀번호가 다릅니다. 다시 시도해주세요.");
+									StaticMenu.waitTime(1000);
+								}
+							}
+						}
+						
+					}
+				}	
+				
 			}
 		}
 

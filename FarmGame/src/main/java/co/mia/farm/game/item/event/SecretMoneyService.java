@@ -21,7 +21,7 @@ public class SecretMoneyService {
 	
 	public void resetMoney() {
 		if(smX != -1 && smY != -1 && smMoney != -1) {
-			ConsolePrintService.printGame[smY][smX] = "□";
+			ConsolePrintService.printGame[smY][smX] = " ";
 			smX = -1;
 			smY = -1;
 			smMoney = -1;

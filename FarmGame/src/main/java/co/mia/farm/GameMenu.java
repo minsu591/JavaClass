@@ -76,19 +76,17 @@ public class GameMenu {
 			as.characterModify();
 			sms.resetMoney();
 			StaticMenu.waitTime(1000);
-		} else if (myField.getFieldX() != -1 && myField.getFieldY() != -1 && myField.getItemId() != -1) { // 내 위치가 농장필드가
-																											// 아니면
+		} else if (myField.getFieldX() != -1 && myField.getFieldY() != -1 && myField.getItemId() != -1) { // 내 위치가 농장필드면
 			if (myField.getItemId() == 0) { // 농장이 비어있음
 				fm.farming(myField);
 			} else { // 농장이 차있음
-				if (myField.getItemId() % 2 == 0) { // 씨앗
+				if (myField.getItemId() % 2 == 0 ) { // 씨앗
 					fm.harvesting(myField);
-				} else {
+				} else { //작물
 					ForFarmingThread fft = new ForFarmingThread();
 					int leftSec = fft.remainTime();
 					AllProductVO cropInfo = is.itemGetproduct(myField.getItemId());
 					System.out.printf("%s(이)가 아직 덜 자랐습니다... %d초만 기다려주세요...\n",cropInfo.getItemName(),leftSec);				
-					ConsolePrintService.exitIfCancel();
 					StaticMenu.waitTime(1000);
 				}
 			}

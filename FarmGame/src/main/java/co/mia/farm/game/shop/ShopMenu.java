@@ -51,16 +51,16 @@ public class ShopMenu {
 						scn.nextLine();
 						StaticMenu.waitTime(1000);
 					}
-					if(ans == 0) {
+					if (ans == 0) {
 						System.out.println("구매를 취소합니다.");
 						break;
 					}
-					
+
 					if (ans > 0 && ans < shopItems.size() + 1) {
 						ans--;
 						AllProductVO purItem = shopItems.get(ans);
 						System.out.printf("%s를 몇 개 구매하시겠어요? (취소 : 0) >>> ", purItem.getItemName());
-						int cnt = 0;
+						int cnt = -1;
 						try {
 							cnt = scn.nextInt();
 							scn.nextLine();
@@ -69,10 +69,10 @@ public class ShopMenu {
 							scn.nextLine();
 							StaticMenu.waitTime(1000);
 						}
-						if (cnt < 0) {
+						if (cnt <= 0) {
 							System.out.println("구매를 취소합니다.");
 							StaticMenu.waitTime(1000);
-						} else {
+						} else if (cnt > 0) {
 							int purMoney = cnt * purItem.getACost();
 							System.out.printf("총 %d별 입니다.\n", purMoney);
 							StaticMenu.waitTime(1000);
@@ -117,7 +117,7 @@ public class ShopMenu {
 					scn.nextLine();
 					StaticMenu.waitTime(1000);
 				}
-				if(ans == 0) {
+				if (ans == 0) {
 					System.out.println("판매를 취소합니다.");
 					break;
 				}
@@ -137,10 +137,10 @@ public class ShopMenu {
 
 					if (cnt > 0 && cnt <= item.getItemCnt()) {
 						int addMoney;
-						if(itemDetail.getItemId()%2==1 && itemDetail.getItemId() < 300) {
-							addMoney = cnt * itemDetail.getACost()/4;
-						}else {
-							addMoney = cnt * itemDetail.getACost();							
+						if (itemDetail.getItemId() % 2 == 1 && itemDetail.getItemId() < 300) {
+							addMoney = cnt * itemDetail.getACost() / 4;
+						} else {
+							addMoney = cnt * itemDetail.getACost();
 						}
 						System.out.printf("총 %d별 입니다!\n", addMoney);
 

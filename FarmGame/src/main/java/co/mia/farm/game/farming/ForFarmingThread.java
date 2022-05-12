@@ -11,9 +11,7 @@ public class ForFarmingThread {
 	public static List<ThreadFieldVO> timeFieldList = new ArrayList<ThreadFieldVO>();
 
 	public void farmingThread(int sec) {
-		System.out.println(timeFieldList.toString());
 		resetTime(); // 이전 값들 지우기
-		System.out.println(timeFieldList.toString());
 		InFieldVO myField = fm.checkMyField(); // 농장필드 정보 가져옴
 		Runnable mf = new MultiFarmingThread(sec, myField);
 		Thread th = new Thread(mf);

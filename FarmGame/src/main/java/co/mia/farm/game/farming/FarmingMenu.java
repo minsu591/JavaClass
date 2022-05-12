@@ -45,7 +45,7 @@ public class FarmingMenu { // 농작 메뉴
 			StaticMenu.waitTime(1000);
 			fsi.fieldUpdateZero(myField);
 			//hp 감소
-			ss.descHp(10);
+			ss.descHp(apv.getCHp());
 			//경험치 증가
 			ss.incExp(apv.getCExp());
 			//캐릭터 정보 db에 저장
@@ -53,7 +53,6 @@ public class FarmingMenu { // 농작 메뉴
 		}else {
 			System.out.println("수확을 취소했습니다.");
 			StaticMenu.waitTime(1000);
-			ConsolePrintService.exitIfCancel();
 		}
 
 	}

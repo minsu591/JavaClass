@@ -11,6 +11,7 @@ public class AllProductVO {
 	private String aExplain;
 	private int cTime;
 	private int cExp;
+	private int cHp;
 	
 	private ItemService is = new ItemServiceImpl();
 	

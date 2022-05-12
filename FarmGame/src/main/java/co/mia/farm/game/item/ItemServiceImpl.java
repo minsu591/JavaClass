@@ -104,6 +104,7 @@ public class ItemServiceImpl implements ItemService {
 				product.setAExplain(rs.getString("a_explain"));
 				product.setCExp(rs.getInt("c_exp"));
 				product.setCTime(rs.getInt("c_time"));
+				product.setCHp(rs.getInt("c_hp"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
 	public List<ItemVO> itemAllSelect() {
 		List<ItemVO> haveItems = new ArrayList<ItemVO>();
 		ItemVO vo;
-		String sql = "SELECT * FROM ITEMS WHERE ACC_ID = ?";
+		String sql = "SELECT * FROM ITEMS WHERE ACC_ID = ? ";
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
@@ -242,6 +243,7 @@ public class ItemServiceImpl implements ItemService {
 				apvo.setAExplain(rs.getString("a_explain"));
 				apvo.setCExp(rs.getInt("c_exp"));
 				apvo.setCTime(rs.getInt("c_time"));
+				apvo.setCHp(rs.getInt("c_hp"));
 				shopItems.add(apvo);
 			}
 		} catch (Exception e) {
@@ -298,13 +300,14 @@ public class ItemServiceImpl implements ItemService {
 		AllProductVO apvo = new AllProductVO();
 		String sql = null;
 		if (num == 0) {
-			sql = "SELECT * FROM all_products WHERE MOD(ITEM_ID,2)=0";
+			sql = "SELECT * FROM ALL_PRODUCTS WHERE MOD(ITEM_ID,2)=0 AND A_LEVEL <= ? ORDER BY A_COST";
 		} else if (num == 1) {
-			sql = "SELECT * FROM all_products where MOD(ITEM_ID,2)=1";
+			sql = "SELECT * FROM all_products where MOD(ITEM_ID,2)=1 AND A_LEVEL <= ?  ORDER BY A_COST";
 		}
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, LoginMenu.loginCharacter.getUserLevel());
 			rs = psmt.executeQuery();
 			while (rs.next()) {
 				apvo = new AllProductVO();
@@ -315,6 +318,7 @@ public class ItemServiceImpl implements ItemService {
 				apvo.setAExplain(rs.getString("a_explain"));
 				apvo.setCExp(rs.getInt("c_exp"));
 				apvo.setCTime(rs.getInt("c_time"));
+				apvo.setCHp(rs.getInt("c_hp"));
 				shopItems.add(apvo);
 			}
 		} catch (Exception e) {
