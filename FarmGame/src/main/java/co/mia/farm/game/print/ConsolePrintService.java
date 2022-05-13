@@ -27,12 +27,15 @@ public class ConsolePrintService {
 	public final static int hSize = 15;
 	public static String[][] printGame = new String[hSize][wSize];
 	public static int userX = 0;
-	public static int userY = hSize-1;
+	public static int userY = hSize - 1;
 	private String person = "＆*";
 	private FieldService fs = new FieldServiceImpl();
 	private StatusService ss = new StatusService();
 	private AccountService asi = new AccountServiceImpl();
 	private FarmingMenu fm = new FarmingMenu();
+	public static int monsterX = (int) (Math.random() * (wSize - 1));
+	public static int monsterY = (int) (Math.random() * (hSize - 1));
+	public static boolean monsterStayFlag = true;
 
 	public void consolePrintRun() {
 		clearScreen();
@@ -65,8 +68,10 @@ public class ConsolePrintService {
 			}
 		}
 		printGame[userY][userX] = person;
+		printGame[monsterY][monsterX] = "@";
 		printGame[0][1] = "■"; // 상점 위치
 		printGame[0][wSize / 2] = "♥"; // 집
+
 		if (SecretMoneyService.smMoney != -1 && SecretMoneyService.smY != -1 && SecretMoneyService.smX != -1) {
 			printGame[SecretMoneyService.smY][SecretMoneyService.smX] = "★";
 		}
@@ -96,19 +101,25 @@ public class ConsolePrintService {
 		}
 		System.out.println();
 		printGame[userY][userX] = " "; // 프린트하고 유저가 원래 있던 자리 돌려놓기
+		printGame[monsterY][monsterX] = " ";
 	}
 
 	private void inputKeyboard() {
-		System.out.print("(a : (왼쪽) ← || d : (오른쪽) → || w : (위) ↑ || s : (아래) ↓ || i : 아이템창 열기 || k : 밭 갈기.메우기 || q: 게임 설명 || quit : 로그아웃) >>> ");
+		System.out.println("( i : 아이템창 열기 || k : 밭 갈기.메우기 || q: 게임 설명 || quit : 로그아웃 )");
+		System.out.print("( a : [왼쪽] ← || d : [오른쪽] → || w : [위] ↑ || s : [아래] ↓ ) >>> ");
 		String input = scn.next();
-		if (input.equals("a")) {
+		if (input.equalsIgnoreCase("a")) {
 			userX--;
-		} else if (input.equals("d")) {
+			monsterMove();
+		} else if (input.equalsIgnoreCase("d")) {
 			userX++;
-		} else if (input.equals("w")) {
+			monsterMove();
+		} else if (input.equalsIgnoreCase("w")) {
 			userY--;
-		} else if (input.equals("s")) {
+			monsterMove();
+		} else if (input.equalsIgnoreCase("s")) {
 			userY++;
+			monsterMove();
 		} else if (input.equals("quit")) {
 			System.out.print("로그아웃 하시겠어요? (y/n) >>> ");
 			String ans = scn.next();
@@ -123,7 +134,7 @@ public class ConsolePrintService {
 				return;
 			}
 
-		} else if (input.equals("i")) { // 아이템창 열기
+		} else if (input.equalsIgnoreCase("i")) { // 아이템창 열기
 			// 아이템창 열기
 			List<ItemVO> myItems = is.itemAllSelect();
 			is.itemsPrint(myItems);
@@ -132,17 +143,17 @@ public class ConsolePrintService {
 				System.out.print("(상세보기 : d || 먹기 : e || 종료 : 그 외 버튼) >>> ");
 				String menu = scn.next();
 				System.out.println();
-				if (menu.equals("d")) {
+				if (menu.equalsIgnoreCase("d")) {
 					itemDetail(myItems);
-				} else if (menu.equals("e")) {
+				} else if (menu.equalsIgnoreCase("e")) {
 					itemEating();
 				}
 			}
 
-		}else if(input.equals("q")) {
+		} else if (input.equalsIgnoreCase("q")) {
 			clearScreen();
 			System.out.println("==========================================================================");
-			System.out.printf("%50s\n\n","※게임설명※");
+			System.out.printf("%50s\n\n", "※게임설명※");
 			System.out.println("방향키 : (a : ← || d : → || w : ↑ || x : ↓) 을 입력하고 엔터를 치면 이동 가능합니다.\n");
 			System.out.println(".o0[ 농작물의 상태는 땅 위로 나타나는 표기로 알 수 있어요! ]");
 			System.out.println("[  ] | 공백 상태는 초기의 땅을 나타냅니다.");
@@ -165,8 +176,8 @@ public class ConsolePrintService {
 			System.out.println("==========================================================================");
 			System.out.println("다 읽으셨다면 아무키나 입력해 빠져나가세요 >>> ");
 			scn.next();
-			 
-		} else if (input.equals("k")) {
+
+		} else if (input.equalsIgnoreCase("k")) {
 			InFieldVO fvo = fm.checkMyField();
 			if (fvo.getFieldX() == -1 && fvo.getFieldY() == -1 && fvo.getItemId() == -1) { // 땅이 없으면 땅을 파고
 				int n = fs.fieldAddHere();
@@ -206,7 +217,7 @@ public class ConsolePrintService {
 						} else {
 							System.out.println("밭 메우기를 취소했습니다.");
 						}
-					} else if (fvo.getItemId() % 2 == 1 ) { // 씨앗 상태면 없애고 메우기
+					} else if (fvo.getItemId() % 2 == 1) { // 씨앗 상태면 없애고 메우기
 						System.out.printf("밭에 심겨진 %s(이)가 덜 자랐습니다. 기다리지 않고 밭을 메울까요? (y/n) >>> ", apv.getItemName());
 						ans = scn.next();
 						if (ans.equals("y")) {
@@ -274,7 +285,8 @@ public class ConsolePrintService {
 				System.out.println("먹는중...");
 				StaticMenu.waitTime(1000);
 			}
-			ch.setUserHp(ch.getUserHp() + 10); // 먹는거에 따라서 hp 달라지는거
+			AllProductVO cropInfo = is.itemGetproduct(myCrops.get(n).getItemID());
+			ch.setUserHp(ch.getUserHp() + cropInfo.getCHp()); // 먹는거에 따라서 hp 달라지는거
 			asi.characterModify();
 			is.itemUpdateCnt(myCrops.get(n).getItemID(), myCrops.get(n).getItemCnt() - 1);
 			if (myCrops.get(n).getItemCnt() <= 0) {
@@ -344,6 +356,46 @@ public class ConsolePrintService {
 		} else if (userY - 1 >= 0) {
 			userY--;
 		}
+	}
+
+	private void monsterMove() {
+		while (monsterStayFlag) {
+			System.out.println("멧돼지 옮겨다님");
+			int x = monsterX;
+			int y = monsterY;
+
+			// 0 : 왼쪽
+			// 1 : 오른쪽
+			// 2 : 위쪽
+			// 3 : 아래쪽
+			int rnd = (int) (Math.random() * 4);
+			if (rnd == 0) {
+				x--;
+			} else if (rnd == 1) {
+				x++;
+			} else if (rnd == 2) {
+				y--;
+			} else if (rnd == 3) {
+				y++;
+			}
+
+			if (x < 0) { // 왼쪽 오버
+				x++;
+			} else if (x > wSize - 1) { // 오른쪽 오버
+				x--;
+			} else if (y < 0) { // 위쪽 오버
+				y++;
+			} else if (y > hSize - 1) {
+				y--;
+			}
+
+			if (monsterX != x || monsterY != y) { // 하나라도 다르면
+				monsterX = x;
+				monsterY = y;
+				break;
+			}
+		}
+
 	}
 
 }

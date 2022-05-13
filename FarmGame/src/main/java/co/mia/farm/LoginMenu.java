@@ -1,6 +1,7 @@
 package co.mia.farm;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +55,27 @@ public class LoginMenu {
 		newCh.setUserNickname(scn.next());
 		System.out.print(".oO[농장 이름을 정해주세요] >>> ");
 		newCh.setFarmName(scn.next());
+		System.out.println(".oO[선택할 캐릭터를 번호로 정해주세요! (그 외의 정보를 입력하면 1번 캐릭터가 삽입됩니다.]");
+		System.out.println("[ 1. ୧(๑•̀⌄•́๑)૭ || 2. ॢ(❛ᴗ❛✿)ॢ || 3. ୧⁎ᵕᴗᵕ⁎୨ || 4. ٩(●'▿'●)۶ || 5. ₍₍ ◟(∗ˊ꒵ˋ∗)◞ ₎₎ ]");
+		System.out.print(">>> ");
+		int ch = -1;
+		try {
+			ch= scn.nextInt();
+		}catch(Exception e) {
+			System.out.println("1번 캐릭터가 삽입됩니다.");
+			scn.next();
+		}
+		String character = "୧(๑•̀⌄•́๑)૭";
+		if(ch == 2) {
+			character = "ॢ(❛ᴗ❛✿)ॢ";
+		}else if(ch == 3) {
+			character = "୧⁎ᵕᴗᵕ⁎୨";
+		}else if(ch == 4) {
+			character = "٩(●'▿'●)۶";
+		}else if(ch == 5) {
+			character = "₍₍ ◟(∗ˊ꒵ˋ∗)◞ ₎₎";
+		}
+		newCh.setUserCharacter(character);
 		int n = as.characterInsert(newCh); //캐릭터 정보 삽입
 		loginCharacter = as.characterSelect(loginAccount.getAccId());
 		
@@ -69,14 +91,18 @@ public class LoginMenu {
 		}
 		ts.run();
 	}
-
+	
+	
+	
 	private void login() {
 
 		int menu = -1;
 
 		while (true) {
+			ConsolePrintService.clearScreen();
 			intro();
-			System.out.println("1. 로그인 | 2. 회원가입 | 3. 회원정보 수정 | 9. 종료");
+			System.out.println("[ 1. 로그인 | 2. 회원가입 | 3. 회원정보 수정 | 4. 랭킹 확인 | 9. 종료 ]");
+			System.out.print(">>> ");
 
 			try {
 				menu = scn.nextInt();
@@ -111,6 +137,7 @@ public class LoginMenu {
 						System.out.println(i);
 						StaticMenu.waitTime(1000);
 					}
+
 					checkGame = true;
 
 					break;
@@ -131,6 +158,47 @@ public class LoginMenu {
 				} else {
 					System.out.println("이미 존재하는 아이디입니다. 다시 시도해주세요.\n");
 				}
+			} else if(menu == 4) { //랭킹 확인
+				ConsolePrintService.clearScreen();
+				List<CharacterVO> chList = as.characterAllSelect();
+				System.out.print("[ 1. 명예의 전당 | 2. 아이디별 순위 확인하기 ] >>> ");
+				int c = -1;
+				try {
+					c = scn.nextInt();		
+				}catch(Exception e) {
+					System.out.println("랭킹 확인이 취소되었습니다.");
+					scn.next();
+				}
+				if(c == 1) { //명예의 전당
+					System.out.printf("%30s\n","[※ 축 하 합 니 다 ※]");
+					
+					for(int i = 0;i<3;i++) {
+						chList.get(i).printRanking(i+1);
+					}
+					System.out.print("종료하려면 아무키나 입력하세요 >>> ");
+					scn.next();
+				}else if (c ==2) { //아이디별 순위 확인하기
+					System.out.print("랭킹을 조회할 아이디를 입력해주세요 >>> ");
+					String s = scn.next();
+					boolean flag = true;
+					for(int i = 0; i<chList.size();i++) {
+						if(s.equals(chList.get(i).getAccId())) {
+							chList.get(i).printRanking(i+1);
+							flag = false;
+							break;
+						}
+					}
+					System.out.print("종료하려면 아무키나 입력하세요 >>> ");
+					scn.next();
+					if(flag) {
+						System.out.println("해당 아이디의 캐릭터가 존재하지 않습니다.");
+						StaticMenu.waitTime(1000);
+					}
+				}
+				
+				
+				
+				
 			} else if(menu == 3) {
 				System.out.println("[회원 정보 수정을 진행합니다]");
 				System.out.print("수정할 아이디를 입력해주세요 >>> ");

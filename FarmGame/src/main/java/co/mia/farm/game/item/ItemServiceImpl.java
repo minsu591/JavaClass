@@ -38,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
 			System.out.println("아이템 창이 비었습니다...");
 			StaticMenu.waitTime(1000);
 		} else {
-			System.out.printf("======= %s의 아이템 List =======\n", LoginMenu.loginCharacter.getUserNickname());
+			System.out.printf("\n======= %s의 아이템 List =======\n", LoginMenu.loginCharacter.getUserNickname());
 			for (int i = 0; i < userItems.size(); i++) {
 				AllProductVO sysItem = itemGetproduct(userItems.get(i).getItemID());
 				System.out.printf("%s번, [%s : %d개]\n", i + 1, sysItem.getItemName(), userItems.get(i).getItemCnt());

@@ -23,7 +23,38 @@ public class FarmingMenu { // 농작 메뉴
 	private FieldService fsi = new FieldServiceImpl();
 	private StatusService ss = new StatusService();
 	private AccountService asi = new AccountServiceImpl();
-
+	
+	private int randomMonster() {
+		int getCnt = 0;
+		int rnd = (int)(Math.random()*5+1);
+		System.out.println();
+		if(rnd == 1) {//농작물 망침
+			int rndDestroy = (int)(Math.random()*3+1);
+			if(rndDestroy == 1) {
+				System.out.println("ﾍ(;´o｀)ﾍ .o0[ 멧돼지가 농작물을 밟고 지나갔나봐요... ]");
+			}else if(rndDestroy == 2) {
+				System.out.println("(╬☉д⊙) .o0[ 까마귀가 농작물을 쪼아 먹었나봐요... ]");
+			}else if(rndDestroy ==3) {
+				System.out.println("Σ(`･ω･Ⅲ) .o0[두더지가 농작물을 훔쳐 갔나봐요...]");
+			}
+			StaticMenu.waitTime(1000);
+			System.out.println("수확할 수 있는 농작물이 없습니다...");
+			StaticMenu.waitTime(1500);
+		}else if(rnd == 2) {
+			int rndIncrease = (int)(Math.random()*2+1);
+			if(rndIncrease == 1) {
+				System.out.println("〜(꒪꒳꒪)〜 .o0[ 운이 좋았네요! 농작물 2개가 자랐습니다. ]");
+				getCnt = 2;
+			}else if(rndIncrease == 2){
+				System.out.println("₍₍ ◝(・ω・)◟ ⁾⁾ .o0[ 운이 엄청 좋았네요! 농작물 3개가 자랐습니다!! ]");
+				getCnt = 3;
+			}
+		}else {
+			getCnt = 1;
+		}
+		return getCnt;
+	}
+	
 	public void harvesting(InFieldVO myField) {
 		AllProductVO apv = is.itemGetproduct(myField.getItemId()); //현재 필드에 심겨진 정보 가져와서 변환
 		System.out.printf("%s(이)가 다 자랐습니다!\n", apv.getItemName()); //현재 필드에 심겨진 작물 이름
@@ -35,14 +66,17 @@ public class FarmingMenu { // 농작 메뉴
 			scn.next();
 		}
 		if (ans.equalsIgnoreCase("y")) {
-			ItemVO myItem = is.itemOneSelect(apv.getItemId()); //현재 필드에 심겨진 작물이 내 아이템 창에 있는지 확인
-			if (myItem.getItemID() == -1 && myItem.getItemCnt() == -1) { // 가방에 없다
-				is.itemInsert(myField.getItemId(), 1);
-			} else { // 가방에 있다
-				is.itemUpdateCnt(myItem.getItemID(), myItem.getItemCnt() + 1);
+			int getCnt = randomMonster();
+			if(getCnt != 0) {
+				ItemVO myItem = is.itemOneSelect(apv.getItemId()); //현재 필드에 심겨진 작물이 내 아이템 창에 있는지 확인
+				if (myItem.getItemID() == -1 && myItem.getItemCnt() == -1) { // 가방에 없다
+					is.itemInsert(myField.getItemId(), getCnt);
+				} else { // 가방에 있다
+					is.itemUpdateCnt(myItem.getItemID(), myItem.getItemCnt() + getCnt);
+				}
+				System.out.printf("%s %d개를 수확했습니다!\n", apv.getItemName(), getCnt);
+				StaticMenu.waitTime(1000);
 			}
-			System.out.printf("%s %d개를 수확했습니다!\n", apv.getItemName(), 1);
-			StaticMenu.waitTime(1000);
 			fsi.fieldUpdateZero(myField);
 			//hp 감소
 			ss.descHp(apv.getCHp());
@@ -50,13 +84,29 @@ public class FarmingMenu { // 농작 메뉴
 			ss.incExp(apv.getCExp());
 			//캐릭터 정보 db에 저장
 			asi.characterModify();
+			
+			
 		}else {
 			System.out.println("수확을 취소했습니다.");
 			StaticMenu.waitTime(1000);
 		}
 
 	}
-
+	
+	public InFieldVO checkMonsterField() {
+		InFieldVO monsterField = new InFieldVO(-1,-1,-1);
+		FieldServiceImpl fsi = new FieldServiceImpl();
+		List<InFieldVO> monsterFields = fsi.fieldSelect();
+		for (int i = 0; i < monsterFields.size(); i++) {
+			if (ConsolePrintService.monsterX == monsterFields.get(i).getFieldX()
+					&& ConsolePrintService.monsterY == monsterFields.get(i).getFieldY()) {
+				monsterField = monsterFields.get(i);
+				break;
+			}
+		}
+		return monsterField;
+	}
+	
 	public InFieldVO checkMyField() { // 내 위치가 농장필드에 있는지 확인 => 있으면 농장필드 정보 반환
 		InFieldVO myField = new InFieldVO(-1, -1, -1);
 		FieldServiceImpl fsi = new FieldServiceImpl();

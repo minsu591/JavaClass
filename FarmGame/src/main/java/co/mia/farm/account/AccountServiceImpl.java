@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -82,13 +83,14 @@ public class AccountServiceImpl implements AccountService {
 
 	public int characterInsert(CharacterVO chVO) {
 		int n = 0;
-		String sql = "INSERT INTO CHARACTERS VALUES(?,?,?,DEFAULT,DEFAULT,DEFAULT,DEFAULT)";
+		String sql = "INSERT INTO CHARACTERS VALUES(?,?,?,DEFAULT,DEFAULT,DEFAULT,DEFAULT,?)";
 		try {
 			conn = dao.getConnection();
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, chVO.getAccId());
 			psmt.setString(2, chVO.getFarmName());
 			psmt.setString(3, chVO.getUserNickname());
+			psmt.setString(4, chVO.getUserCharacter());
 			n = psmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -159,6 +161,7 @@ public class AccountServiceImpl implements AccountService {
 				chVO.setUserExp(rs.getInt("user_exp"));
 				chVO.setUserHp(rs.getInt("user_hp"));
 				chVO.setUserLevel(rs.getInt("user_level"));
+				chVO.setUserCharacter(rs.getString("user_character"));
 			}
 
 		} catch (Exception e) {
@@ -256,6 +259,36 @@ public class AccountServiceImpl implements AccountService {
 
 		}
 		return n;
+	}
+
+	@Override
+	public List<CharacterVO> characterAllSelect() {
+		List<CharacterVO> chList = new ArrayList<CharacterVO>();
+		CharacterVO chVO;
+		String sql = "SELECT * FROM CHARACTERS ORDER BY USER_MONEY DESC";
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+			while(rs.next()) {
+				chVO = new CharacterVO();
+				chVO.setAccId(rs.getString("acc_id"));
+				chVO.setFarmName(rs.getString("farm_name"));
+				chVO.setUserNickname(rs.getString("user_nickname"));
+				chVO.setUserMoney(rs.getInt("user_money"));
+				chVO.setUserExp(rs.getInt("user_exp"));
+				chVO.setUserHp(rs.getInt("user_hp"));
+				chVO.setUserLevel(rs.getInt("user_level"));
+				chVO.setUserCharacter(rs.getString("user_character"));
+				chList.add(chVO);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		
+		return chList;
 	}
 
 }

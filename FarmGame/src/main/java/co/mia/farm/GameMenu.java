@@ -12,6 +12,7 @@ import co.mia.farm.game.farming.InFieldVO;
 import co.mia.farm.game.item.AllProductVO;
 import co.mia.farm.game.item.ItemService;
 import co.mia.farm.game.item.ItemServiceImpl;
+import co.mia.farm.game.item.event.MonsterThread;
 import co.mia.farm.game.item.event.SecretMoneyService;
 import co.mia.farm.game.print.ConsolePrintService;
 import co.mia.farm.game.shop.ShopMenu;
@@ -22,6 +23,7 @@ public class GameMenu {
 	private FieldService fs = new FieldServiceImpl();
 	private FarmingMenu fm = new FarmingMenu();
 	private InFieldVO myField = new InFieldVO();
+	private InFieldVO monsterField = new InFieldVO();
 	private ShopMenu sm = new ShopMenu();
 	private StatusService ss = new StatusService();
 	public static boolean checkGame = true;
@@ -50,11 +52,25 @@ public class GameMenu {
 			}
 		}
 	}
+
+	
 	
 	private void game() {
 		cps.consolePrintRun();
 		// 이동
 		myField = fm.checkMyField();
+		monsterField = fm.checkMonsterField();
+		
+		//퇴치하고 나면 더 안움직임
+		//
+		if(monsterField.getFieldX() == ConsolePrintService.monsterX && monsterField.getFieldY() == ConsolePrintService.monsterY && ConsolePrintService.monsterStayFlag) {
+			Runnable r = new MonsterThread(monsterField);
+			Thread th = new Thread(r);
+			th.start();
+			ConsolePrintService.monsterStayFlag = false;
+		}
+		
+		
 		if (ConsolePrintService.userY == 0 && ConsolePrintService.userX == 1) { // 내 위치가 상점
 			sm.run();
 			ConsolePrintService.exitIfCancel();
@@ -91,6 +107,10 @@ public class GameMenu {
 				}
 			}
 		}
+		
+		
+		
+		
 	}
 
 }

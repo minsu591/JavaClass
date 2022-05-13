@@ -6,6 +6,7 @@ import co.mia.farm.account.AccountService;
 import co.mia.farm.account.AccountServiceImpl;
 import co.mia.farm.account.CharacterVO;
 import co.mia.farm.game.item.event.SecretMoneyService;
+import co.mia.farm.game.print.ConsolePrintService;
 import co.mia.farm.game.print.WaitThread;
 
 public class StatusService {
@@ -59,6 +60,7 @@ public class StatusService {
 			System.out.printf("체력이 %d만큼 감소했습니다.\n",minusHp);
 			StaticMenu.waitTime(1000);
 		}else {
+			ConsolePrintService.clearScreen();
 			myCh.setUserHp(0);
 			myCh.toString();
 			System.out.println("캐릭터 체력이 0이되어 쓰러졌습니다...");

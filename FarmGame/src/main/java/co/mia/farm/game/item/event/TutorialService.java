@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import co.mia.farm.LoginMenu;
 import co.mia.farm.StaticMenu;
+import co.mia.farm.account.CharacterVO;
 import co.mia.farm.game.farming.FieldService;
 import co.mia.farm.game.farming.FieldServiceImpl;
 import co.mia.farm.game.farming.ForFarmingThread;
@@ -13,6 +14,7 @@ import co.mia.farm.game.item.ItemService;
 import co.mia.farm.game.item.ItemServiceImpl;
 import co.mia.farm.game.item.ItemVO;
 import co.mia.farm.game.print.ConsolePrintService;
+
 
 public class TutorialService {
 	private Scanner scn = new Scanner(System.in);
@@ -25,15 +27,27 @@ public class TutorialService {
 	private int fX = -1;
 	private int fY = -1;
 	private int fNum = 0;
+	private boolean tutorialFlag = false;
+	private String fString = "#";
 
 	public void run() {
 		System.out.println("여러분들의 농장 생활을 도와드리기 위해서 튜토리얼을 진행할게요!");
+		System.out.println("튜토리얼 중에 나가게 되면 어떤 정보도 저장되지 않고 재접속시 바로 게임을 진행합니다.");
 		System.out.print("원하신다면 아무키나, 원하지 않으신다면 skip을 입력해주세요! >>> ");
 		String ans = scn.next();
 		if (ans.equalsIgnoreCase("skip")) {
 			System.out.println("튜토리얼 진행을 원하지 않으시는군요! 바로 농장으로 보내드릴게요!");
 		} else {
 			tutorial();
+			if(tutorialFlag) { //tutorial을 완료하면 
+				is.itemInsert(100, 1);
+			}else {
+				ItemVO item = new ItemVO();
+				item.setItemID(100);
+				is.itemDelete(item);
+				item.setItemID(101);
+				is.itemDelete(item);
+			}
 		}
 	}
 
@@ -61,7 +75,6 @@ public class TutorialService {
 			setting();
 			arrPrintInTutorial();
 			System.out.println("아이템 창에 감자 씨앗을 하나 넣어드렸어요! 확인해보세요!");
-			scn.next();
 			StaticMenu.waitTime(1000);
 			System.out.println("i를 누르면 아이템 창을 열 수 있습니다.");
 			System.out.print("(a : 왼쪽 || d : 오른쪽 || w : 위 || s : 아래 || i : 아이템창 열기) >>> ");
@@ -151,11 +164,13 @@ public class TutorialService {
 			y--;
 		}
 
+		fString = "Y";
 		setting();
 		arrPrintInTutorial();
-		StaticMenu.waitTime(1000);
+		StaticMenu.waitTime(2000);
 		fNum = 100;
 		while (true) {
+			fString = "O";
 			setting();
 			arrPrintInTutorial();
 			System.out.println("동일한 자리로 가서 씨앗을 수확해보세요");
@@ -174,8 +189,7 @@ public class TutorialService {
 				}
 				if (b.equalsIgnoreCase("y")) {
 					System.out.println("수확을 완료했습니다!");
-					is.itemInsert(100, 1);
-					StaticMenu.waitTime(1000);
+					StaticMenu.waitTime(2000);
 					break;
 				} else {
 					System.out.println("수확을 취소했습니다.");
@@ -187,10 +201,11 @@ public class TutorialService {
 		clearConsole();
 		System.out.println("튜토리얼이 끝났습니다!");
 		StaticMenu.waitTime(2000);
-		System.out.println("방금 수확한 감자는 아이템창에 넣어놨어요!");
+		System.out.println("방금 수확한 감자는 아이템창에 넣어놨어요! 상점에서 판매해 농사 자금을 마련해보세요!");
 		StaticMenu.waitTime(2000);
 		System.out.println("궁금하신 사항이 있다면 q를 눌러 게임 설명을 참고하세요.");
 		StaticMenu.waitTime(2000);
+		tutorialFlag = true;
 		System.out.print("아무키나 눌러 게임을 진행하세요 >>> ");
 		scn.next();
 
@@ -198,22 +213,22 @@ public class TutorialService {
 
 	private String inputKeyBoard() {
 		String input = scn.next();
-		if (input.equals("a")) {
+		if (input.equalsIgnoreCase("a")) { 
 			x--;
-		} else if (input.equals("d")) {
+		} else if (input.equalsIgnoreCase("d")) {
 			x++;
-		} else if (input.equals("w")) {
+		} else if (input.equalsIgnoreCase("w")) {
 			y--;
-		} else if (input.equals("s")) {
+		} else if (input.equalsIgnoreCase("s")) {
 			y++;
-		} else if (input.equals("i")) { // 아이템창 열기
+		} else if (input.equalsIgnoreCase("i")) { // 아이템창 열기
 			// 아이템창 열기
 			List<ItemVO> myItems = is.itemAllSelect();
 			is.itemsPrint(myItems);
 			System.out.print("종료하려면 아무키나 누르세요 >>> ");
 			scn.next();
 
-		} else if (input.equals("k")) {
+		} else if (input.equalsIgnoreCase("k")) {
 			fX = x;
 			fY = y;
 			System.out.println("밭 갈기에 성공했습니다.");
@@ -226,7 +241,7 @@ public class TutorialService {
 			x--;
 		} else if (y < 0) { // 위쪽 오버
 			y++;
-		} else if (y > 1) {
+		} else if (y > 2) {
 			y--;
 		}
 		return input;
@@ -239,7 +254,7 @@ public class TutorialService {
 			}
 		}
 		if (fX != -1 && fY != -1) {
-			printField[fY][fX] = "#";
+			printField[fY][fX] = fString;
 		}
 		printField[y][x] = person;
 	}

@@ -15,6 +15,7 @@ public class CharacterVO {
 	private int userLevel;
 	private int userExp;
 	private int userMoney;
+	private String userCharacter;
 	
 	public CharacterVO() {
 		
@@ -24,7 +25,7 @@ public class CharacterVO {
 	public String toString() {
 		LevelServiceImpl ls = new LevelServiceImpl();
 		LevelVO levelInfo = ls.levelOneSelect(accId);
-		System.out.println("٩(●'▿'●)۶");
+		System.out.printf("%s\n",userCharacter);
 		System.out.printf("%s 농장, %s님\n",farmName,userNickname);
 		System.out.printf("레벨 : %2d (%s) || 현재 경험치 : %3d /%3d\n",userLevel,levelInfo.getLevelName(),userExp,levelInfo.getMaxExp());
 		System.out.printf("현재 자금 : %d별\n",userMoney);
@@ -36,6 +37,27 @@ public class CharacterVO {
 		System.out.println();
 		
 		return null;
+	}
+	
+	public void printRanking(int rank) {
+		String r = " ";
+		String l = " ";
+		
+		if(rank == 1) {
+			r = "(/^▽^)/**";
+			l = "**\\(^▽^\\)";
+			System.out.printf("%-11s [ %2d등 ] : %s 농장의 %s님 %11s\n",r,rank,farmName,userNickname,l);
+		}else if(rank == 2) {
+			r = "(ง ᵕᴗᵕ)ว ♪";
+			l = "(ง ᵕᴗᵕ)ว ♪";
+			System.out.printf("%-11s [ %2d등 ] : %s 농장의 %s님 %11s\n",r,rank,farmName,userNickname,l);
+		}else if(rank ==3 ) {
+			r = "♪( ›◡‹ )";
+			l = "♪( ›◡‹ )";
+			System.out.printf("%-11s [ %2d등 ] : %s 농장의 %s님 %11s\n",r,rank,farmName,userNickname,l);
+		}else {
+			System.out.printf("[ %2d등 ] : %s 농장의 %s님 %11s\n",rank,farmName,userNickname,l);
+		}
 	}
 
 

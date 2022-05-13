@@ -17,9 +17,7 @@ public interface ItemService {
 	
 	//5.판매나 구매에서 소지 갯수가 변했을 때 item 수정
 	int itemUpdateCnt(int itemId, int newCnt);
-	
-	//6.씨앗으로 변했을 때 item 수정
-	
+
 	//7. 아이템 0개 이하일 때 삭제
 	int itemDelete(ItemVO item);
 	
