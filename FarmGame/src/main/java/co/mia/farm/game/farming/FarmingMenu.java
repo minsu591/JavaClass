@@ -29,18 +29,6 @@ public class FarmingMenu { // 농작 메뉴
 		int rnd = (int)(Math.random()*5+1);
 		System.out.println();
 		if(rnd == 1) {//농작물 망침
-			int rndDestroy = (int)(Math.random()*3+1);
-			if(rndDestroy == 1) {
-				System.out.println("ﾍ(;´o｀)ﾍ .o0[ 멧돼지가 농작물을 밟고 지나갔나봐요... ]");
-			}else if(rndDestroy == 2) {
-				System.out.println("(╬☉д⊙) .o0[ 까마귀가 농작물을 쪼아 먹었나봐요... ]");
-			}else if(rndDestroy ==3) {
-				System.out.println("Σ(`･ω･Ⅲ) .o0[두더지가 농작물을 훔쳐 갔나봐요...]");
-			}
-			StaticMenu.waitTime(1000);
-			System.out.println("수확할 수 있는 농작물이 없습니다...");
-			StaticMenu.waitTime(1500);
-		}else if(rnd == 2) {
 			int rndIncrease = (int)(Math.random()*2+1);
 			if(rndIncrease == 1) {
 				System.out.println("〜(꒪꒳꒪)〜 .o0[ 운이 좋았네요! 농작물 2개가 자랐습니다. ]");
@@ -95,13 +83,12 @@ public class FarmingMenu { // 농작 메뉴
 	
 	public InFieldVO checkMonsterField() {
 		InFieldVO monsterField = new InFieldVO(-1,-1,-1);
-		FieldServiceImpl fsi = new FieldServiceImpl();
-		List<InFieldVO> monsterFields = fsi.fieldSelect();
-		for (int i = 0; i < monsterFields.size(); i++) {
-			if (ConsolePrintService.monsterX == monsterFields.get(i).getFieldX()
-					&& ConsolePrintService.monsterY == monsterFields.get(i).getFieldY()) {
-				monsterField = monsterFields.get(i);
-				break;
+		int rnd = (int)(Math.random()*30);
+		if(rnd==1) {
+			List<InFieldVO> monsterFields = fsi.fieldSelect();
+			if(monsterFields.size() != 0) {
+				rnd = (int)(Math.random()*(monsterFields.size()-1));
+				monsterField = monsterFields.get(rnd);
 			}
 		}
 		return monsterField;

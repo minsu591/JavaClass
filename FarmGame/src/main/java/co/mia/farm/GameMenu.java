@@ -30,6 +30,8 @@ public class GameMenu {
 	private AccountService as = new AccountServiceImpl();
 	private SecretMoneyService sms = new SecretMoneyService();
 	private ItemService is = new ItemServiceImpl();
+	//몬스터가 이미 작물 먹고 있을 때는 false로
+	public static boolean monsterFlag = true;
 
 	public void run() {
 		setting();
@@ -59,15 +61,24 @@ public class GameMenu {
 		cps.consolePrintRun();
 		// 이동
 		myField = fm.checkMyField();
-		monsterField = fm.checkMonsterField();
+		if(monsterFlag) { //몬스터가 다른 작물 먹을 때는 시행하지 않기.
+			monsterField = fm.checkMonsterField();			
+		}
 		
-		//퇴치하고 나면 더 안움직임
-		//
-		if(monsterField.getFieldX() == ConsolePrintService.monsterX && monsterField.getFieldY() == ConsolePrintService.monsterY && ConsolePrintService.monsterStayFlag) {
-			Runnable r = new MonsterThread(monsterField);
+		//몬스터 필드에 값이 들어왔을 때 (1/10의 확률로)
+		//최초로 시행해야되기때문에 monsterFlag가 true일 때
+		if(monsterField.getFieldX() != -1 && monsterField.getFieldY() != -1 && monsterFlag) {
+			ConsolePrintService.monsterX = monsterField.getFieldX();
+			ConsolePrintService.monsterY = monsterField.getFieldY();
+			Runnable r;
+			if(monsterField.getItemId()==0) {
+				r = new MonsterThread(monsterField, false);
+			}else {
+				r = new MonsterThread(monsterField,true);
+			}
 			Thread th = new Thread(r);
 			th.start();
-			ConsolePrintService.monsterStayFlag = false;
+			monsterFlag = false;
 		}
 		
 		
@@ -93,7 +104,10 @@ public class GameMenu {
 			sms.resetMoney();
 			StaticMenu.waitTime(1000);
 		} else if (myField.getFieldX() != -1 && myField.getFieldY() != -1 && myField.getItemId() != -1) { // 내 위치가 농장필드면
-			if (myField.getItemId() == 0) { // 농장이 비어있음
+			if(ConsolePrintService.userX == ConsolePrintService.monsterX && ConsolePrintService.userY == ConsolePrintService.monsterY) {
+				// 내 위치가 농장필드인데 멧돼지랑 위치가 같다?
+				// 멧돼지 퇴치하는거 실행
+			} else if (myField.getItemId() == 0) { // 농장이 비어있음
 				fm.farming(myField);
 			} else { // 농장이 차있음
 				if (myField.getItemId() % 2 == 0 ) { // 씨앗

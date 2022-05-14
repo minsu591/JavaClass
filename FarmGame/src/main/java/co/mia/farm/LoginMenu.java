@@ -55,8 +55,8 @@ public class LoginMenu {
 		newCh.setUserNickname(scn.next());
 		System.out.print(".oO[농장 이름을 정해주세요] >>> ");
 		newCh.setFarmName(scn.next());
-		System.out.println(".oO[선택할 캐릭터를 번호로 정해주세요! (그 외의 정보를 입력하면 1번 캐릭터가 삽입됩니다.]");
-		System.out.println("[ 1. ୧(๑•̀⌄•́๑)૭ || 2. ॢ(❛ᴗ❛✿)ॢ || 3. ୧⁎ᵕᴗᵕ⁎୨ || 4. ٩(●'▿'●)۶ || 5. ₍₍ ◟(∗ˊ꒵ˋ∗)◞ ₎₎ ]");
+		System.out.println(".oO[선택할 캐릭터를 번호로 정해주세요! (그 외의 정보를 입력하면 1번 캐릭터가 삽입됩니다.)]");
+		System.out.println("[ 1. ˘ᗜ˘ || 2. ·з· || 3. ๑'ٮ'๑ || 4. ∗❛⌄❛∗ ]");
 		System.out.print(">>> ");
 		int ch = -1;
 		try {
@@ -65,15 +65,13 @@ public class LoginMenu {
 			System.out.println("1번 캐릭터가 삽입됩니다.");
 			scn.next();
 		}
-		String character = "୧(๑•̀⌄•́๑)૭";
+		String character = "˘ᗜ˘";
 		if(ch == 2) {
-			character = "ॢ(❛ᴗ❛✿)ॢ";
+			character = "·з·";
 		}else if(ch == 3) {
-			character = "୧⁎ᵕᴗᵕ⁎୨";
+			character = "๑'ٮ'๑";
 		}else if(ch == 4) {
-			character = "٩(●'▿'●)۶";
-		}else if(ch == 5) {
-			character = "₍₍ ◟(∗ˊ꒵ˋ∗)◞ ₎₎";
+			character = "∗❛⌄❛∗";
 		}
 		newCh.setUserCharacter(character);
 		int n = as.characterInsert(newCh); //캐릭터 정보 삽입
@@ -130,7 +128,7 @@ public class LoginMenu {
 					if (as.characterCheck(loginAccount.getAccId())) {
 						tutorialFarm();
 					}else {
-						loginCharacter = as.characterSelect(loginAccount.getAccId());						
+						loginCharacter = as.characterSelect(loginAccount.getAccId());
 					}
 					System.out.println("\n농장에 입장합니다...");
 					for(int i = 3; i>0;i--) {
@@ -158,6 +156,7 @@ public class LoginMenu {
 				} else {
 					System.out.println("이미 존재하는 아이디입니다. 다시 시도해주세요.\n");
 				}
+				StaticMenu.waitTime(1000);
 			} else if(menu == 4) { //랭킹 확인
 				ConsolePrintService.clearScreen();
 				List<CharacterVO> chList = as.characterAllSelect();

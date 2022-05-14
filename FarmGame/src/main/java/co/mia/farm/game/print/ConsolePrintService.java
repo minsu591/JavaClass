@@ -23,19 +23,18 @@ import co.mia.farm.game.status.StatusService;
 public class ConsolePrintService {
 	private Scanner scn = new Scanner(System.in);
 	private ItemService is = new ItemServiceImpl();
-	public final static int wSize = 25;
-	public final static int hSize = 15;
+	public final static int wSize = 15; //25
+	public final static int hSize = 10; //15
 	public static String[][] printGame = new String[hSize][wSize];
 	public static int userX = 0;
-	public static int userY = hSize - 1;
-	private String person = "＆*";
+	public static int userY = hSize - 1;	
 	private FieldService fs = new FieldServiceImpl();
 	private StatusService ss = new StatusService();
 	private AccountService asi = new AccountServiceImpl();
 	private FarmingMenu fm = new FarmingMenu();
-	public static int monsterX = (int) (Math.random() * (wSize - 1));
-	public static int monsterY = (int) (Math.random() * (hSize - 1));
-	public static boolean monsterStayFlag = true;
+	public static int monsterX = -1;
+	public static int monsterY = -1;
+	
 
 	public void consolePrintRun() {
 		clearScreen();
@@ -67,41 +66,42 @@ public class ConsolePrintService {
 				printGame[i.getFieldY()][i.getFieldX()] = "O";
 			}
 		}
-		printGame[userY][userX] = person;
-		printGame[monsterY][monsterX] = "@";
+		printGame[userY][userX] = LoginMenu.loginCharacter.getUserCharacter();
 		printGame[0][1] = "■"; // 상점 위치
 		printGame[0][wSize / 2] = "♥"; // 집
 
 		if (SecretMoneyService.smMoney != -1 && SecretMoneyService.smY != -1 && SecretMoneyService.smX != -1) {
 			printGame[SecretMoneyService.smY][SecretMoneyService.smX] = "★";
 		}
+		if(monsterX != -1 && monsterY != -1) {
+			printGame[monsterY][monsterX] = "@";
+		}
 
 	}
 
 	private void arrPrint() {
-		for (int i = 0; i < wSize - 3; i++) {
-			System.out.printf("%2s", "ㅡ");
+		for (int i = 0; i < wSize; i++) {
+			System.out.printf("%-4s", "━");
 		}
 		System.out.println();
 
 		for (int i = 0; i < hSize; i++) {
 			for (int j = 0; j < wSize; j++) {
 				if (j == 0) {
-					System.out.print("|");
+					System.out.print("┃");
 				}
-				System.out.printf("%2s", printGame[i][j]);
+				System.out.printf("%4s", printGame[i][j]);
 				if (j == wSize - 1) {
-					System.out.print("|");
+					System.out.print("┃");
 				}
 			}
 			System.out.println();
 		}
-		for (int i = 0; i < wSize - 3; i++) {
-			System.out.printf("%2s", "ㅡ");
+		for (int i = 0; i < wSize; i++) {
+			System.out.printf("%-4s", "━");
 		}
 		System.out.println();
 		printGame[userY][userX] = " "; // 프린트하고 유저가 원래 있던 자리 돌려놓기
-		printGame[monsterY][monsterX] = " ";
 	}
 
 	private void inputKeyboard() {
@@ -110,16 +110,12 @@ public class ConsolePrintService {
 		String input = scn.next();
 		if (input.equalsIgnoreCase("a")) {
 			userX--;
-			monsterMove();
 		} else if (input.equalsIgnoreCase("d")) {
 			userX++;
-			monsterMove();
 		} else if (input.equalsIgnoreCase("w")) {
 			userY--;
-			monsterMove();
 		} else if (input.equalsIgnoreCase("s")) {
 			userY++;
-			monsterMove();
 		} else if (input.equals("quit")) {
 			System.out.print("로그아웃 하시겠어요? (y/n) >>> ");
 			String ans = scn.next();
@@ -306,19 +302,19 @@ public class ConsolePrintService {
 
 	private void titlePrint() {
 		for (int i = 0; i < wSize; i++) {
-			System.out.printf("%2s", "=");
+			System.out.printf("%4s", "=");
 		}
 		System.out.println();
 
 		for (int i = 0; i < wSize / 2 - 3; i++) {
-			System.out.printf("%2s", " ");
+			System.out.printf("%4s", " ");
 		}
 		System.out.printf("◎ %3s의 %s농장 ◎", LoginMenu.loginCharacter.getUserNickname(),
 				LoginMenu.loginCharacter.getFarmName());
 
 		System.out.println();
 		for (int i = 0; i < wSize; i++) {
-			System.out.printf("%2s", "=");
+			System.out.printf("%4s", "=");
 		}
 		System.out.println();
 		System.out.println();
@@ -358,44 +354,6 @@ public class ConsolePrintService {
 		}
 	}
 
-	private void monsterMove() {
-		while (monsterStayFlag) {
-			System.out.println("멧돼지 옮겨다님");
-			int x = monsterX;
-			int y = monsterY;
-
-			// 0 : 왼쪽
-			// 1 : 오른쪽
-			// 2 : 위쪽
-			// 3 : 아래쪽
-			int rnd = (int) (Math.random() * 4);
-			if (rnd == 0) {
-				x--;
-			} else if (rnd == 1) {
-				x++;
-			} else if (rnd == 2) {
-				y--;
-			} else if (rnd == 3) {
-				y++;
-			}
-
-			if (x < 0) { // 왼쪽 오버
-				x++;
-			} else if (x > wSize - 1) { // 오른쪽 오버
-				x--;
-			} else if (y < 0) { // 위쪽 오버
-				y++;
-			} else if (y > hSize - 1) {
-				y--;
-			}
-
-			if (monsterX != x || monsterY != y) { // 하나라도 다르면
-				monsterX = x;
-				monsterY = y;
-				break;
-			}
-		}
-
-	}
+	
 
 }
