@@ -231,6 +231,7 @@ public class TutorialService {
 			is.itemsPrint(myItems);
 			System.out.print("종료하려면 아무키나 누르세요 >>> ");
 			scn.next();
+			scn.nextLine();
 
 		} else if (input.equalsIgnoreCase("k")) {
 			fX = x;

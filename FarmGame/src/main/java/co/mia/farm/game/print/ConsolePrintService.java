@@ -171,6 +171,7 @@ public class ConsolePrintService {
 			System.out.println("[ 땅 메우기 : k ] | 메우고 싶은 땅 위에서 k를 입력하면 메웠던 땅이 사라집니다.\n");
 			System.out.println("==========================================================================");
 			System.out.println("다 읽으셨다면 아무키나 입력해 빠져나가세요 >>> ");
+			scn.next();
 			scn.nextLine();
 
 		} else if (input.equalsIgnoreCase("k")) {
@@ -262,11 +263,12 @@ public class ConsolePrintService {
 	private void itemEating() {
 		int n = -1;
 		List<ItemVO> myCrops = is.itemKindSelect(0);
-		is.itemsPrint(myCrops);
 		if (myCrops.size() == 0) {
 			System.out.println("먹을만한게 없습니다...");
+			StaticMenu.waitTime(1000);
 			return;
 		}
+		is.itemsPrint(myCrops);
 		System.out.print("먹을 아이템을 선택해주세요 >>> ");
 		try {
 			n = scn.nextInt();
@@ -339,6 +341,7 @@ public class ConsolePrintService {
 			itemInfo.toStringDetail();
 			System.out.println("종료하려면 아무 버튼이나 눌러주세요.");
 			System.out.println("=================================");
+			scn.next();
 			scn.nextLine();
 		}
 	}

@@ -78,7 +78,9 @@ public class GameMenu {
 			th.start();
 			monsterFlag = false;
 		}
-
+		
+		
+		
 		if (ConsolePrintService.userY == 0 && ConsolePrintService.userX == 1) { // 내 위치가 상점
 			sm.run();
 			ConsolePrintService.exitIfCancel();
@@ -114,7 +116,7 @@ public class GameMenu {
 			} else { // 농장이 차있음
 				if (myField.getItemId() % 2 == 0) { // 씨앗
 					fm.harvesting(myField);
-				} else { // 작물
+				} else { // 작물이 덜 자랐을 때 (씨앗 상태일 때)
 					ForFarmingThread fft = new ForFarmingThread();
 					int leftSec = fft.remainTime();
 					AllProductVO cropInfo = is.itemGetproduct(myField.getItemId());

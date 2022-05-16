@@ -101,6 +101,7 @@ public class ShopMenu {
 				}
 			} else if (menu == 3) {
 				System.out.println("다음에 또 찾아주세요!");
+				asi.characterModify();
 				StaticMenu.waitTime(1000);
 				break;
 			} else if (menu == 2) {// 판매

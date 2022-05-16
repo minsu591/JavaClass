@@ -1,5 +1,7 @@
 package co.mia.farm.game.item.event;
 
+import java.util.Scanner;
+
 import co.mia.farm.GameMenu;
 import co.mia.farm.StaticMenu;
 import co.mia.farm.game.farming.FieldService;
@@ -11,6 +13,7 @@ public class MonsterThread implements Runnable{
 	private FieldService fsi = new FieldServiceImpl();
 	private InFieldVO monsterField = new InFieldVO();
 	private boolean cropBoolean;
+	private Scanner scn = new Scanner(System.in);
 	
 	
 	public MonsterThread(InFieldVO monsterField, boolean cropBoolean) {

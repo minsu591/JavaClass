@@ -38,7 +38,6 @@ public class ForFarmingThread {
 	}
 
 	private void resetTime() {
-		InFieldVO f = fm.checkMyField();
 		List<InFieldVO> flist = new ArrayList<InFieldVO>();
 		for(int i = 0; i< timeFieldList.size();i++) {
 			for(int j =0; j<flist.size();j++) {

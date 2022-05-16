@@ -1,5 +1,7 @@
 package co.mia.farm.game.status;
 
+import java.util.Scanner;
+
 import co.mia.farm.LoginMenu;
 import co.mia.farm.StaticMenu;
 import co.mia.farm.account.AccountService;
@@ -16,6 +18,7 @@ public class StatusService {
 	public static boolean threadFlag = true;
 	private AccountService as = new AccountServiceImpl();
 	private SecretMoneyService sms = new SecretMoneyService();
+	private Scanner scn = new Scanner(System.in);
 	
 	//경험치 증가 (max경험치보다 작은지 확인)
 	//max경험치가 되면 level업 + 팝업창 띄워주기
@@ -32,6 +35,7 @@ public class StatusService {
 			myCh.setUserExp(myCh.getUserExp()+addExp - levelInfo.getMaxExp());
 			if(myCh.getUserLevel()+1 <=5) { //최대 레벨 설정
 				myCh.setUserLevel(myCh.getUserLevel()+1);
+				as.characterModify();
 				levelInfo = ls.levelOneSelect(myCh.getAccId());
 				myCh.setUserHp(levelInfo.getMaxHp());
 				System.out.println("축하합니다! 레벨이 올랐습니다!");
@@ -71,6 +75,8 @@ public class StatusService {
 			}
 			System.out.println("체력을 조금 회복했습니다. 체력소모에 유의하세요!");
 			myCh.setUserHp((int)(levelInfo.getMaxHp()*0.1));
+			System.out.print("빠져나가려면 아무키나 입력하세요 >>> ");
+			scn.nextLine();
 			StaticMenu.waitTime(1000);
 			
 		}
