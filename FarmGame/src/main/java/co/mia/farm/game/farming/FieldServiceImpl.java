@@ -135,4 +135,27 @@ public class FieldServiceImpl implements FieldService{
 		return n;
 	}
 
+
+	@Override
+	public int fieldInfoSelect(InFieldVO myField) {
+		int itemId = 0;
+		String sql = "SELECT ITEM_ID FROM IN_FIELD WHERE ACC_ID = ? AND FIELD_X = ? AND FIELD_Y =?";
+		try {
+			conn = dao.getConnection();
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, LoginMenu.loginAccount.getAccId());
+			psmt.setInt(2, myField.getFieldX());
+			psmt.setInt(3, myField.getFieldY());
+			rs = psmt.executeQuery();
+			if(rs.next()) {
+				itemId = rs.getInt("item_id");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return itemId;
+	}
+
 }

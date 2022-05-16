@@ -24,7 +24,7 @@ public class ConsolePrintService {
 	private Scanner scn = new Scanner(System.in);
 	private ItemService is = new ItemServiceImpl();
 	public final static int wSize = 15; //25
-	public final static int hSize = 10; //15
+	public final static int hSize = 12; //15
 	public static String[][] printGame = new String[hSize][wSize];
 	public static int userX = 0;
 	public static int userY = hSize - 1;	
@@ -59,11 +59,11 @@ public class ConsolePrintService {
 
 		for (InFieldVO i : myFields) {
 			if (i.getItemId() == 0) { // 비어있다
-				printGame[i.getFieldY()][i.getFieldX()] = "#";
+				printGame[i.getFieldY()][i.getFieldX()] = "##";
 			} else if (i.getItemId() % 2 == 1) {
-				printGame[i.getFieldY()][i.getFieldX()] = "Y";
+				printGame[i.getFieldY()][i.getFieldX()] = "YY";
 			} else if (i.getItemId() % 2 == 0) {
-				printGame[i.getFieldY()][i.getFieldX()] = "O";
+				printGame[i.getFieldY()][i.getFieldX()] = "§§";
 			}
 		}
 		printGame[userY][userX] = LoginMenu.loginCharacter.getUserCharacter();
@@ -71,7 +71,7 @@ public class ConsolePrintService {
 		printGame[0][wSize / 2] = "♥"; // 집
 
 		if (SecretMoneyService.smMoney != -1 && SecretMoneyService.smY != -1 && SecretMoneyService.smX != -1) {
-			printGame[SecretMoneyService.smY][SecretMoneyService.smX] = "★";
+			printGame[SecretMoneyService.smY][SecretMoneyService.smX] = "**";
 		}
 		if(monsterX != -1 && monsterY != -1) {
 			printGame[monsterY][monsterX] = "@";
@@ -81,7 +81,7 @@ public class ConsolePrintService {
 
 	private void arrPrint() {
 		for (int i = 0; i < wSize; i++) {
-			System.out.printf("%-4s", "━");
+			System.out.printf("%4s", "━━━");
 		}
 		System.out.println();
 
@@ -90,7 +90,7 @@ public class ConsolePrintService {
 				if (j == 0) {
 					System.out.print("┃");
 				}
-				System.out.printf("%4s", printGame[i][j]);
+				System.out.printf("%-4s", printGame[i][j]);
 				if (j == wSize - 1) {
 					System.out.print("┃");
 				}
@@ -98,7 +98,7 @@ public class ConsolePrintService {
 			System.out.println();
 		}
 		for (int i = 0; i < wSize; i++) {
-			System.out.printf("%-4s", "━");
+			System.out.printf("%4s", "━━━");
 		}
 		System.out.println();
 		printGame[userY][userX] = " "; // 프린트하고 유저가 원래 있던 자리 돌려놓기
@@ -153,9 +153,9 @@ public class ConsolePrintService {
 			System.out.println("방향키 : (a : ← || d : → || w : ↑ || x : ↓) 을 입력하고 엔터를 치면 이동 가능합니다.\n");
 			System.out.println(".o0[ 농작물의 상태는 땅 위로 나타나는 표기로 알 수 있어요! ]");
 			System.out.println("[  ] | 공백 상태는 초기의 땅을 나타냅니다.");
-			System.out.println("[ # ] | 밭 갈기(k 입력)를 통해서 농작물을 심을 수 있는 상태로 만들 수 있어요.");
-			System.out.println("[ Y ] | 농작물이 자라는 중일 때는 Y로 표시됩니다. 이 때 해당 위치로 가면 농작물이 완전히 자랄 때까지 얼마나 남았는지 알 수 있어요.");
-			System.out.println("[ O ] | 완전히 자랐을 때 O로 표시됩니다. 수확해보세요!\n");
+			System.out.println("[ ## ] | 밭 갈기(k 입력)를 통해서 농작물을 심을 수 있는 상태로 만들 수 있어요.");
+			System.out.println("[ YY ] | 농작물이 자라는 중일 때는 Y로 표시됩니다. 이 때 해당 위치로 가면 농작물이 완전히 자랄 때까지 얼마나 남았는지 알 수 있어요.");
+			System.out.println("[ §§ ] | 완전히 자랐을 때 O로 표시됩니다. 수확해보세요!\n");
 			System.out.println(".o0[ 씨앗을 구매하고 싶거나 아이템을 판매하고 싶으면 상점으로 가세요! ]");
 			System.out.println("[ 상점 : ■ ] | 해당 위치로 가면 상점에서 씨앗을 구매할 수 있습니다.");
 			System.out.println("          | 씨앗 및 작물을 판매할 수도 있습니다.");
@@ -163,7 +163,7 @@ public class ConsolePrintService {
 			System.out.println(".o0[ 체력이 없어서 자꾸 쓰러진다면 집으로 가보세요! ]");
 			System.out.println("[ 집 : ♥ ] | 해당 위치로 가면 소모된 HP를 충전할 수 있습니다.\n");
 			System.out.println(".o0[ 과도한 소비로 소지금이 떨어졌을 때 별을 찾으세요! ]");
-			System.out.println("[ 비상금 : ★ ] | 해당 위치로 가면 랜덤으로 비상금을 얻을 수 있습니다.\n");
+			System.out.println("[ 비상금 : ** ] | 해당 위치로 가면 랜덤으로 비상금을 얻을 수 있습니다.\n");
 			System.out.println(".o0[ 가지고 있는 아이템의 정보가 궁금하다면 아이템 창을 확인해보세요! ]");
 			System.out.println("[ 아이템창 : i ] | 아이템 창의 아이템을 먹어서 체력을 채울 수 있습니다.");
 			System.out.println("              | 아이템 창 내의 아이템에 대해서 상세 정보를 볼 수 있습니다.\n");
@@ -171,7 +171,7 @@ public class ConsolePrintService {
 			System.out.println("[ 땅 메우기 : k ] | 메우고 싶은 땅 위에서 k를 입력하면 메웠던 땅이 사라집니다.\n");
 			System.out.println("==========================================================================");
 			System.out.println("다 읽으셨다면 아무키나 입력해 빠져나가세요 >>> ");
-			scn.next();
+			scn.nextLine();
 
 		} else if (input.equalsIgnoreCase("k")) {
 			InFieldVO fvo = fm.checkMyField();
@@ -186,7 +186,7 @@ public class ConsolePrintService {
 				System.out.print("밭을 메울까요? (y/n) >>> ");
 				String ans = scn.next();
 				boolean flag = false;
-
+				System.out.println();
 				if (ans.equalsIgnoreCase("y")) {
 					AllProductVO apv = is.itemGetproduct(fvo.getItemId());
 					// 작물이 있으면 수확하고 메우기
@@ -227,14 +227,14 @@ public class ConsolePrintService {
 						System.out.println("밭을 메울게요.");
 						flag = true;
 					}
-
+					System.out.println();
 					if (flag) {
 						for (int i = 0; i < 2; i++) {
 							System.out.println("밭 메우는중...");
 							StaticMenu.waitTime(1000);
 						}
 						fs.fieldDrop(fvo);
-						System.out.println("밭 메우기 완료!");
+						System.out.println("\n밭 메우기 완료!");
 					}
 					StaticMenu.waitTime(1000);
 
@@ -244,7 +244,7 @@ public class ConsolePrintService {
 		}
 
 		else {
-			System.out.println("다시 입력");
+			scn.nextLine();
 		}
 
 		// x,y가 범위를 벗어났을 때
@@ -302,19 +302,20 @@ public class ConsolePrintService {
 
 	private void titlePrint() {
 		for (int i = 0; i < wSize; i++) {
-			System.out.printf("%4s", "=");
+			System.out.printf("%4s", "==");
 		}
+
 		System.out.println();
 
-		for (int i = 0; i < wSize / 2 - 3; i++) {
+		for (int i = 0; i < wSize / 2-1; i++) {
 			System.out.printf("%4s", " ");
 		}
-		System.out.printf("◎ %3s의 %s농장 ◎", LoginMenu.loginCharacter.getUserNickname(),
+		System.out.printf("◎ %s의 %s농장 ◎", LoginMenu.loginCharacter.getUserNickname(),
 				LoginMenu.loginCharacter.getFarmName());
 
 		System.out.println();
 		for (int i = 0; i < wSize; i++) {
-			System.out.printf("%4s", "=");
+			System.out.printf("%4s", "==");
 		}
 		System.out.println();
 		System.out.println();
@@ -338,7 +339,7 @@ public class ConsolePrintService {
 			itemInfo.toStringDetail();
 			System.out.println("종료하려면 아무 버튼이나 눌러주세요.");
 			System.out.println("=================================");
-			scn.next();
+			scn.nextLine();
 		}
 	}
 

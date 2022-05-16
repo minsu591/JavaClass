@@ -23,7 +23,7 @@ public class MonsterThread implements Runnable{
 	public void run() {
 		int s = 10;
 		
-		System.out.println("※※※※※※※※※※ 위 험 ※※※※※※※※※※");
+		System.out.println("\n※※※※※※※※※※ 위 험 ※※※※※※※※※※");
 		while(s>0) {
 			if(GameMenu.monsterFlag) {
 				break;
@@ -38,7 +38,7 @@ public class MonsterThread implements Runnable{
 			s--;
 			
 			if(ConsolePrintService.userX == ConsolePrintService.monsterX && ConsolePrintService.userY == ConsolePrintService.monsterY) {
-				int rnd =(int)(Math.random()*3); //랜덤으로
+				int rnd =(int)(Math.random()*7); //랜덤으로
 				for(int i = 0;i<2;i++) {
 					System.out.println("\n멧돼지 퇴치 시도 중입니다...");
 					StaticMenu.waitTime(1000);

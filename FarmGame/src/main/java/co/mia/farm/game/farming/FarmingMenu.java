@@ -134,7 +134,7 @@ public class FarmingMenu { // 농작 메뉴
 					ans--;
 					ItemVO myItem = userItems.get(ans);
 					sysItem = is.itemGetproduct(myItem.getItemID());
-					System.out.printf("%s을(를) 심을게요!\n", sysItem.getItemName());
+					System.out.printf("%s(을)를 심을게요!\n\n", sysItem.getItemName());
 
 					if (myItem.getItemCnt() <= 1) {
 						is.itemDelete(myItem);
@@ -148,7 +148,7 @@ public class FarmingMenu { // 농작 메뉴
 					System.out.println("예뻐하는 중... (❁´▽`❁)*✲ﾟ*");
 					StaticMenu.waitTime(1000);
 					fsi.fieldUpdate(myField, myItem.getItemID()); // 씨앗 심은거 표시
-					System.out.println("심기 완료!");
+					System.out.println("\n심기 완료!");
 					ss.descHp(5);
 					ss.incExp(5);
 					asi.characterModify();
@@ -157,12 +157,12 @@ public class FarmingMenu { // 농작 메뉴
 					fft.farmingThread(sysItem.getCTime());
 					
 				} else {
-					System.out.println("선택한 농작물이 존재하지 않습니다. 다시 선택해주세요...");
+					System.out.println("\n선택한 농작물이 존재하지 않습니다. 다시 선택해주세요...");
 					StaticMenu.waitTime(1000);
 				}
 			}
 		} else {
-			System.out.println("농작물 심기를 취소했습니다.");
+			System.out.println("\n농작물 심기를 취소했습니다.");
 			StaticMenu.waitTime(1000);
 		}
 

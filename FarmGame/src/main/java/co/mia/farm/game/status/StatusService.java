@@ -32,7 +32,8 @@ public class StatusService {
 			myCh.setUserExp(myCh.getUserExp()+addExp - levelInfo.getMaxExp());
 			if(myCh.getUserLevel()+1 <=5) { //최대 레벨 설정
 				myCh.setUserLevel(myCh.getUserLevel()+1);
-				myCh.setUserHp(levelInfo.getMaxHp()+20);
+				levelInfo = ls.levelOneSelect(myCh.getAccId());
+				myCh.setUserHp(levelInfo.getMaxHp());
 				System.out.println("축하합니다! 레벨이 올랐습니다!");
 				System.out.println("체력도 충전됐어요!");
 			}else {
@@ -69,7 +70,7 @@ public class StatusService {
 				StaticMenu.waitTime(1500);
 			}
 			System.out.println("체력을 조금 회복했습니다. 체력소모에 유의하세요!");
-			myCh.setUserHp((int)(levelInfo.getMaxHp()*0.15));
+			myCh.setUserHp((int)(levelInfo.getMaxHp()*0.1));
 			StaticMenu.waitTime(1000);
 			
 		}
@@ -91,7 +92,7 @@ public class StatusService {
 	public void enterHome() {
 		myCh = LoginMenu.loginCharacter;
 		levelInfo = ls.levelOneSelect(myCh.getAccId());
-		System.out.printf("˘◡˘ [̂%s Home] ˘◡˘\n",myCh.getUserNickname());
+		System.out.printf("\n˘◡˘ [̂%s Home] ˘◡˘\n",myCh.getUserNickname());
 		System.out.println(".oO[집에 들어왔습니다! 편하게 쉬세요!]\n");
 		
 		int origHp = myCh.getUserHp();

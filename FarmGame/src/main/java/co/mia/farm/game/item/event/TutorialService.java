@@ -20,15 +20,14 @@ public class TutorialService {
 	private Scanner scn = new Scanner(System.in);
 	private int x;
 	private int y;
-	private String person = "&*";
+	private String person;
 	private String[][] printField = new String[3][5];
 	private ItemService is = new ItemServiceImpl();
-	private FieldService fs = new FieldServiceImpl();
 	private int fX = -1;
 	private int fY = -1;
 	private int fNum = 0;
 	private boolean tutorialFlag = false;
-	private String fString = "#";
+	private String fString = "##";
 
 	public void run() {
 		System.out.println("여러분들의 농장 생활을 도와드리기 위해서 튜토리얼을 진행할게요!");
@@ -52,10 +51,10 @@ public class TutorialService {
 	}
 
 	private void tutorial() {
+		person = LoginMenu.loginCharacter.getUserCharacter();
 		setting();
 		arrPrintInTutorial();
-
-		System.out.println("지금 보이는 화면의 >> &* << 이 여러분입니다.");
+		System.out.printf("지금 보이는 화면의 >> %s << 이 여러분입니다.\n",person);
 		StaticMenu.waitTime(1000);
 		System.out.println("각 키를 입력하면 상하좌우로 움직일 수 있어요.");
 		StaticMenu.waitTime(1000);
@@ -84,7 +83,7 @@ public class TutorialService {
 			}
 		}
 		System.out.println("이제 밭을 갈아볼게요! k를 눌러보세요!");
-		StaticMenu.waitTime(2000);
+		StaticMenu.waitTime(1000);
 		while (true) {
 			setting();
 			arrPrintInTutorial();
@@ -164,21 +163,20 @@ public class TutorialService {
 			y--;
 		}
 
-		fString = "Y";
+		fString = "YY";
 		setting();
 		arrPrintInTutorial();
 		StaticMenu.waitTime(2000);
 		fNum = 100;
 		while (true) {
-			fString = "O";
+			fString = "§§";
 			setting();
 			arrPrintInTutorial();
 			System.out.println("동일한 자리로 가서 씨앗을 수확해보세요");
-			StaticMenu.waitTime(1000);
 			System.out.print("(a : 왼쪽 || d : 오른쪽 || w : 위 || s : 아래 || i : 아이템창 열기 || k : 밭 갈기.메우기) >>> ");
 			inputKeyBoard();
 			if (fNum % 2 == 0 && fNum > 0 && x == fX && y == fY) {
-				System.out.printf("%s(이)가 다 자랐습니다!\n", sysItem.getItemName());
+				System.out.printf("\n%s(이)가 다 자랐습니다!\n", sysItem.getItemName());
 				System.out.print("농작물을 수확하시겠어요? (y/n) >>> ");
 				String b = " ";
 				try {
@@ -199,15 +197,21 @@ public class TutorialService {
 			}
 		}
 		clearConsole();
-		System.out.println("튜토리얼이 끝났습니다!");
+		System.out.println(".o0[ 튜토리얼이 끝났습니다! ]");
 		StaticMenu.waitTime(2000);
-		System.out.println("방금 수확한 감자는 아이템창에 넣어놨어요! 상점에서 판매해 농사 자금을 마련해보세요!");
+		System.out.println(".o0[ 방금 수확한 감자는 아이템창에 넣어놨어요! ]");
 		StaticMenu.waitTime(2000);
-		System.out.println("궁금하신 사항이 있다면 q를 눌러 게임 설명을 참고하세요.");
+		System.out.println("\n.o0[ 상점(■)에서 판매하고 그 돈으로 씨앗을 구매해보세요! ]");
+		StaticMenu.waitTime(1500);
+		System.out.println(".o0[ 일을 하다가 체력이 떨어지면 집(♥)에서 쉬어보세요! ]");
+		StaticMenu.waitTime(1500);
+		System.out.println(".o0[ 농사를 짓다가 멧돼지(@)가 찾아오면 쫓아내세요! ]");
+		StaticMenu.waitTime(1500);
+		System.out.println("\n더 궁금하신 사항이 있다면 q를 눌러 게임 설명을 참고하세요.");
 		StaticMenu.waitTime(2000);
 		tutorialFlag = true;
-		System.out.print("아무키나 눌러 게임을 진행하세요 >>> ");
-		scn.next();
+		System.out.print("\n아무키나 눌러 게임을 진행하세요 >>> ");
+		scn.nextLine();
 
 	}
 
@@ -273,24 +277,24 @@ public class TutorialService {
 		System.out.println();
 
 		for (int i = 0; i < 5; i++) {
-			System.out.printf("%2s", "ㅡ");
+			System.out.printf("%4s", "━━━");
 		}
 		System.out.println();
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 5; j++) {
 				if (j == 0) {
-					System.out.print("|");
+					System.out.print("┃");
 				}
-				System.out.printf("%2s", printField[i][j]);
+				System.out.printf("%4s", printField[i][j]);
 				if (j == 5 - 1) {
-					System.out.print("|");
+					System.out.print("┃");
 				}
 			}
 			System.out.println();
 		}
 		for (int i = 0; i < 5; i++) {
-			System.out.printf("%2s", "ㅡ");
+			System.out.printf("%4s", "━━━");
 		}
 		System.out.println();
 		printField[y][x] = " "; // 프린트하고 유저가 원래 있던 자리 돌려놓기

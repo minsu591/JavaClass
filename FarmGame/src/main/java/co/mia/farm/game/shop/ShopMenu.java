@@ -47,7 +47,6 @@ public class ShopMenu {
 						ans = scn.nextInt();
 						scn.nextLine();
 					} catch (Exception e) {
-						System.out.println("숫자만 입력해주세요...");
 						scn.nextLine();
 						StaticMenu.waitTime(1000);
 					}

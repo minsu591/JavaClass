@@ -17,7 +17,11 @@ public class MultiFarmingThread implements Runnable {
 		}
 		// 정보 바꾸기
 		FieldServiceImpl fsi = new FieldServiceImpl();
-		fsi.fieldUpdate(myField, myField.getItemId()-1);
+		int itemId = fsi.fieldInfoSelect(myField);
+		if(itemId != 0) {
+			fsi.fieldUpdate(myField, myField.getItemId()-1);			
+		}
+
 	}
 
 	

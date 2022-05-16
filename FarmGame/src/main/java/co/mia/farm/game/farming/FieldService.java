@@ -17,5 +17,7 @@ public interface FieldService {
 	
 	int fieldDrop(InFieldVO myField);
 	
+	int fieldInfoSelect(InFieldVO myField);
+	
 
 }
