@@ -87,11 +87,13 @@ public class GameMenu {
 		} else if (ConsolePrintService.userY == 0 && ConsolePrintService.userX == ConsolePrintService.wSize / 2) { // 내
 																													// 위치가
 																													// 집이면
+			cps.consoleUpdate();
 			ss.enterHome();
 			ConsolePrintService.exitIfCancel();
 		} else if (ConsolePrintService.userY == SecretMoneyService.smY
 				&& ConsolePrintService.userX == SecretMoneyService.smX) { // 비상금
 			// 비상금
+			cps.consoleUpdate();
 			System.out.println("\n앗! 숨겨둔 비상금을 발견했습니다!");
 			StaticMenu.waitTime(1000);
 			System.out.println("얼마일까요?");
@@ -112,8 +114,10 @@ public class GameMenu {
 				// 내 위치가 농장필드인데 멧돼지랑 위치가 같다?
 				// 멧돼지 퇴치하는거만 실행
 			} else if (myField.getItemId() == 0) { // 농장이 비어있음
+				cps.consoleUpdate();
 				fm.farming(myField);
 			} else { // 농장이 차있음
+				cps.consoleUpdate();
 				if (myField.getItemId() % 2 == 0) { // 씨앗
 					fm.harvesting(myField);
 				} else { // 작물이 덜 자랐을 때 (씨앗 상태일 때)

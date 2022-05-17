@@ -35,7 +35,15 @@ public class ConsolePrintService {
 	public static int monsterX = -1;
 	public static int monsterY = -1;
 	
-
+	
+	public void consoleUpdate() {
+		clearScreen();
+		titlePrint();
+		setFieldArray();
+		arrPrint();
+		LoginMenu.loginCharacter.toString();
+	}
+	
 	public void consolePrintRun() {
 		clearScreen();
 		titlePrint();

@@ -24,7 +24,7 @@ public class FarmingMenu { // 농작 메뉴
 	private StatusService ss = new StatusService();
 	private AccountService asi = new AccountServiceImpl();
 	
-	private int randomMonster() {
+	private int randomCrop() {
 		int getCnt = 0;
 		int rnd = (int)(Math.random()*5+1);
 		System.out.println();
@@ -54,7 +54,7 @@ public class FarmingMenu { // 농작 메뉴
 			scn.next();
 		}
 		if (ans.equalsIgnoreCase("y")) {
-			int getCnt = randomMonster();
+			int getCnt = randomCrop();
 			if(getCnt != 0) {
 				ItemVO myItem = is.itemOneSelect(apv.getItemId()); //현재 필드에 심겨진 작물이 내 아이템 창에 있는지 확인
 				if (myItem.getItemID() == -1 && myItem.getItemCnt() == -1) { // 가방에 없다

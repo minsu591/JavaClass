@@ -107,6 +107,9 @@ public class ShopMenu {
 			} else if (menu == 2) {// 판매
 				List<ItemVO> myItems = is.itemAllSelect();
 				is.itemsPrint(myItems, "상점 판매용 씨앗");
+				if(myItems.size()==0) {
+					break;
+				}
 				System.out.print("무엇을 판매하시겠어요? (취소 : 0) >>> ");
 				int ans = -1;
 				try {
