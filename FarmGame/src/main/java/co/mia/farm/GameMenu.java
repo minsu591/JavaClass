@@ -37,7 +37,7 @@ public class GameMenu {
 		setting();
 		sms.settingMoney();
 		while (LoginMenu.checkGame) {
-			game();
+			game();     
 		}
 
 	}

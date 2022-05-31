@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>emp 화면</title>
+</head>
+
+<body>
+  <form name = "frm" action="../ajax.do" method="post">
+  	<!-- (ajax.do "get") form의 기본 기능 : ajax.do로 가는 -->
+    fist_name : <input type="text" name="fname"><br>
+    last_name : <input type="text" name="lname"><br>
+    email : <input type="email" name="email"><br>
+    hire_date : <input type="date" name="hdate"><br>
+    job_id : <input type="text" name="job" value="IT_PROG"><br>
+    <input type="hidden" name="cmd" value="insert"> 
+    <input type = "hidden" name ="empId">
+    <input type="submit" value="저장">
+    <input type="reset" value="취소">
+    <input type="button" id="modify" value="수정">
+  </form>
+
+  <h3>사원리스트</h3>
+  <div id="show">
+  	<table border =1>
+  		<thead>
+  			<tr>
+  				<th>사원번호</th>
+  				<th>이름</th>
+  				<th>성</th>
+  				<th>이메일</th>
+  				<th>입사일</th>
+  				<th>직무</th>
+  			</tr>
+  		</thead>
+  		<tbody id = "list"></tbody>
+  	</table>
+  </div>
+  <script>
+	  let myform = document.forms.frm;
+	  // submit : 저장
+	  myform.onsubmit = function(e){
+		  e.preventDefault();
+	      let fname = myform.fname.value;
+	      let lname = myform.lname.value;
+	      let email = myform.email.value;
+	      let job = myform.job.value;
+	      let hdate = myform.hdate.value;
+	      let cmd = myform.cmd.value;
+	      let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}`;
+	      let xhtp = new XMLHttpRequest();
+	      xhtp.open("post",'../ajax.do');
+	      xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded'); //header정보에 지금 컨텐츠의 타입을 정해줌 (post일 경우만)
+	      //?key=val&key1=val1의 형식으로 데이터 넘기겠다는 x-www-form-urlencode
+	      //json 타입, text 형식으로 넘기는 것도 설정할 수 있음
+	      xhtp.send(param);
+	      
+	      //tr클릭햇을 때 이미 존재하는 값들을 불러와서 조정
+	      
+	      xhtp.onload = function(){ //페이지 요청하면 이 데이터를 읽어오겠다.
+	          let data = JSON.parse(xhtp.responseText);
+	          console.log(data);
+	          document.getElementById('list').append(makeTr(data));
+	      }
+	  }
+	//리스트 출력
+	  let xhtp = new XMLHttpRequest();
+	  xhtp.open('get','../ajax.do?job=json');
+	  xhtp.send();
+	  xhtp.onload = function() { //처음 실행할 때
+	      console.log(xhtp.responseText);
+	      let data = JSON.parse(xhtp.responseText);
+	      let bodyList = document.getElementById('list');
+	      data.forEach(emp => {
+	          bodyList.append(makeTr(emp));
+	      })
+	  }
+	  let fields = ['employeeId','firstName','lastName','email','hireDate','jobId'];
+	  //데이터 한 건 입력
+	  function makeTr(emp){
+	      let tr = document.createElement('tr');
+	      tr.addEventListener('click',trClick);
+	      fields.forEach(field => {
+	          let td = document.createElement('td');
+	          td.innerText = emp[field];
+	          tr.append(td);
+	      })
+	      return tr;
+	  }
+	  
+	  function trClick(){
+		    //tr클릭 => this.tr
+		    myform.empId.value=this.children[0].innerText;
+		    myform.fname.value=this.children[1].innerText;
+		    myform.lname.value=this.children[2].innerText;
+		    myform.email.value= this.children[3].innerText;
+		    myform.hdate.value=this.children[4].innerText.substring(0,10);
+		    myform.job.value=this.children[5].innerText;
+	   }
+	  
+	  document.getElementById('modify').addEventListener('click',function(){
+		    let myform = document.forms.frm;
+		    myform.cmd.value = 'update';
+		    let fname = myform.fname.value;
+		    let lname = myform.lname.value;
+		    let email = myform.email.value;
+		    let job = myform.job.value;
+		    let hdate = myform.hdate.value;
+		    let cmd = myform.cmd.value;
+		    let empId = myform.empId.value;
+		    
+		    let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}&empId=${empId}`;
+		    let xhtp = new XMLHttpRequest();
+		    xhtp.open("post",'../ajax.do');
+		    xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+		    xhtp.send(param);
+		    xhtp.onload = function(){
+		        console.log(xhtp.responseText);
+		        
+		    }
+
+		});
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index.html</title>
+</head>
+<body>
+	<h3>~~환영합니다~~</h3>
+	<a href='emp/empList.html'>사원리스트</a><br> <!-- 경로중요, 링크는 무조건 get방식 -->
+	<a href='ajax.do?job=html'>Ajax Page</a>
+	<form action="ajax.do" method="get">
+		<input type = "hidden" name="job" value="json"> <!--name은 파라메터 이름, 
+		기본값을 json으로 하겠다 name을 통한 value가 서버로 전송-->
+		<input type="submit" value="전송">
+	</form>
+</body>
+</html>
