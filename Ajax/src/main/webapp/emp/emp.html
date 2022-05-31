@@ -44,28 +44,36 @@
 	  // submit : 저장
 	  myform.onsubmit = function(e){
 		  e.preventDefault();
-	      let fname = myform.fname.value;
-	      let lname = myform.lname.value;
-	      let email = myform.email.value;
-	      let job = myform.job.value;
-	      let hdate = myform.hdate.value;
-	      let cmd = myform.cmd.value;
-	      let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}`;
-	      let xhtp = new XMLHttpRequest();
-	      xhtp.open("post",'../ajax.do');
-	      xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded'); //header정보에 지금 컨텐츠의 타입을 정해줌 (post일 경우만)
-	      //?key=val&key1=val1의 형식으로 데이터 넘기겠다는 x-www-form-urlencode
-	      //json 타입, text 형식으로 넘기는 것도 설정할 수 있음
-	      xhtp.send(param);
-	      
-	      //tr클릭햇을 때 이미 존재하는 값들을 불러와서 조정
-	      
-	      xhtp.onload = function(){ //페이지 요청하면 이 데이터를 읽어오겠다.
-	          let data = JSON.parse(xhtp.responseText);
-	          console.log(data);
-	          document.getElementById('list').append(makeTr(data));
-	      }
+	      ajaxPost(addCallBack);
 	  }
+	  
+	  function addCallBack(e){
+		  let data = JSON.parse(e.target.responseText);
+          document.getElementById('list').append(makeTr(data));
+	  }
+	  
+	  function ajaxPost(callBackFnc){
+		  	let fname = myform.fname.value;
+		    let lname = myform.lname.value;
+		    let email = myform.email.value;
+		    let job = myform.job.value;
+		    let hdate = myform.hdate.value;
+		    let cmd = myform.cmd.value;
+		    let empId = myform.empId.value;
+		    
+		    let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}&empId=${empId}`;
+		    let xhtp = new XMLHttpRequest();
+		    xhtp.open("post",'../ajax.do');
+		    xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded'); //header정보에 지금 컨텐츠의 타입을 정해줌 (post일 경우만)
+		    //?key=val&key1=val1의 형식으로 데이터 넘기겠다는 x-www-form-urlencode
+		    //json 타입, text 형식으로 넘기는 것도 설정할 수 있음
+	      	//tr클릭햇을 때 이미 존재하는 값들을 불러와서 조정
+		    xhtp.send(param);
+		    
+		    xhtp.onload = callBackFnc; //페이지 요청하면 이 데이터를 읽어오겠다.
+	  }
+	  
+	  
 	//리스트 출력
 	  let xhtp = new XMLHttpRequest();
 	  xhtp.open('get','../ajax.do?job=json');
@@ -82,6 +90,7 @@
 	  //데이터 한 건 입력
 	  function makeTr(emp){
 	      let tr = document.createElement('tr');
+	      tr.setAttribute('id','key_'+emp.employeeId);
 	      tr.addEventListener('click',trClick);
 	      fields.forEach(field => {
 	          let td = document.createElement('td');
@@ -103,26 +112,18 @@
 	  
 	  document.getElementById('modify').addEventListener('click',function(){
 		    let myform = document.forms.frm;
-		    myform.cmd.value = 'update';
-		    let fname = myform.fname.value;
-		    let lname = myform.lname.value;
-		    let email = myform.email.value;
-		    let job = myform.job.value;
-		    let hdate = myform.hdate.value;
-		    let cmd = myform.cmd.value;
-		    let empId = myform.empId.value;
+		    myform.cmd.value = 'update'; //cmd의 값을 update로 변경
 		    
-		    let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}&empId=${empId}`;
-		    let xhtp = new XMLHttpRequest();
-		    xhtp.open("post",'../ajax.do');
-		    xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-		    xhtp.send(param);
-		    xhtp.onload = function(){
-		        console.log(xhtp.responseText);
-		        
-		    }
-
+		    ajaxPost(modifyCallBack);
 		});
+	  
+	  function modifyCallBack(e){
+		  console.log(e.target.responseText);
+	        let data = JSON.parse(xhtp.responseText);
+	        let oldTr = document.getElementById('key_'+data.employeeId);
+	        let newTr = makeTr(data);
+	        oldTr.parentNode.replaceChild(newTr,oldTr); //(변경할 값, 변경될 값)
+	  }
   </script>
 </body>
 
