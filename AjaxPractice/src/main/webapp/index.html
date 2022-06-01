@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h3>연습을 해보겠습니다 짠</h3>
+	<ul>
+		<li><a href='employees/empList.html'>(단순 연결) 사원리스트</a></li>
+		<li><a href='ajaxPractice.do?job=html'>Ajax Page</a></li> <!-- get방식의 job=html -->
+		<li><a href='employees/emp.html'>(서버 연동)사원 페이지</a> <!-- post방식 페이지 -->
+		<li> <!-- get방식의 job=json -->
+			<form action="ajaxPractice.do" method="get">
+				<input type="hidden" name="job" value="json"> <!-- job의 기본값이 json이 되는건 폼을 통해 전송될 때! -->
+				<input type="submit" value="전송">
+			</form>
+		</li>		
+	</ul>
+	
+</body>
+</html>

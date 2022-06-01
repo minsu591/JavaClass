@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AjaxPractice emp.html</title>
+    <script src='empScript.js'></script>
+</head>
+<body>
+    <form name = "frm" action="../ajaxPractice.do" method="post">
+        <ul>
+            <li>first_name : <input type="text" name="fname"></li>
+            <li>last_name : <input type="text" name="lname"></li>
+            <li>email : <input type="email" name="email"></li>
+            <li>hire_date : <input type="date" name="hdate"></li>
+            <li>job_id : <input type="text" name="job" value="IT_PROG"></li>
+        </ul>
+        <input type="submit" value="저장">
+        <input type="reset" value="취소">
+        <input type="button" id="modify" value="수정">
+        <input type="hidden" name="cmd" value="insert">
+        <input type="hidden" name = "empId"> <!--자동으로 생성되는 empId를 저장하기 위한 용도-->
+    </form>
+
+    <h3>사원리스트</h3>
+    <div id="show">
+        <table border="1px">
+            <thead>
+                <tr>
+                    <th>사원 번호</th>
+                    <th>이름</th>
+                    <th>성</th>
+                    <th>이메일</th>
+                    <th>입사일</th>
+                    <th>직무</th>
+                </tr>
+            </thead>
+            <tbody id="showList"></tbody>
+        </table>
+    </div>
+</body>
+</html>
