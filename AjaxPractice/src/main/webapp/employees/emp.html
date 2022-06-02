@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AjaxPractice emp.html</title>
-    <script src='empScript.js'></script>
+    <!-- <script src='empScript.js'></script> -->
 </head>
 <body>
     <form name = "frm" action="../ajaxPractice.do" method="post">
@@ -19,6 +19,7 @@
         <input type="submit" value="저장">
         <input type="reset" value="취소">
         <input type="button" id="modify" value="수정">
+        <input type="button" id="selDel" value="선택삭제">
         <input type="hidden" name="cmd" value="insert">
         <input type="hidden" name = "empId"> <!--자동으로 생성되는 empId를 저장하기 위한 용도-->
     </form>
@@ -34,10 +35,152 @@
                     <th>이메일</th>
                     <th>입사일</th>
                     <th>직무</th>
+                    <th>삭제</th>
+                    <th>박스</th>
                 </tr>
             </thead>
             <tbody id="showList"></tbody>
         </table>
     </div>
+    <script>
+	    let myform = document.forms.frm;
+	
+	    //비동기 페이지 출력
+	    fetch('../ajaxPractice.do?job=json')
+	    	.then(result => result.json())
+	    	.then(res => {
+	    		let bodyList =document.getElementById('showList');
+	    		res.forEach(emp => {
+	    			bodyList.append(makeTr(emp));
+	    		})
+	    	})
+	
+	    //form의 submit 버튼이 눌렸을 때 (저장 버튼이 눌렸을 때)
+	    myform.onsubmit = function(e){ //on으로 시작하는건 이벤트
+	        e.preventDefault(); //기존에 새페이지로 이동하는걸 막고
+	        ajaxPost(addCallBack); //이걸 실행해라
+	    }
+	
+	    //수정 버튼이 눌러졌을 때
+	    document.getElementById('modify').addEventListener('click',function(){
+	        myform.cmd.value = 'update';
+	        ajaxPost(modifyCallBack);
+	    })
+	    
+		//let addXhtp;
+	    function ajaxPost(callBackFnc){
+	        //form으로부터 정보를 가져와서 파라미터로 저장
+	        //=> FormData 이용
+	        let fd = new FormData(myform); //가져오고싶은 formData삽입
+	        let params = [];
+	        for(let data of fd.entries()){//entries => {key:value,key:value}
+	            params.push(`${data[0]}=${data[1]}`);
+	        }
+	        let param = params.join('&');
+	        
+	        /*addXhtp = new XMLHttpRequest();
+	        addXhtp.open('post','../AjaxPracticeServlet');
+	        addXhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded'); //header정보에 지금 컨텐츠의 타입을 정해줌 (post일 경우만)
+	        addXhtp.send(param);
+		    
+	        addXhtp.onload = callBackFnc;*/
+	        
+	        fetch('../AjaxPracticeServlet',{
+	            method:'post',
+	            headers:{'Content-type':'application/x-www-form-urlencoded'},
+	            body:param
+	        }).then(result => result.json())
+	        .then(res => callBackFnc(res))
+	        .catch(err => console.log(err));
+	    }
+	
+	    function addCallBack(res){
+	        //응답된 텍스트를 JSON형태로 바꿔서 전달 후 추가
+	        //let data = JSON.parse(addXhtp.responseText);
+	        document.getElementById('showList').append(makeTr(res));
+	    }
+	
+	    function modifyCallBack(res){
+	        let oldTr = document.getElementById('key_'+res.employeeId);
+	        let newTr = makeTr(res);
+	        oldTr.replaceWith(newTr);
+	        
+	    }
+	
+	
+	
+	    let fields = ['employeeId','firstName','lastName','email','hireDate','jobId'];
+	    function makeTr(emp){
+	        let tr = document.createElement('tr');
+	        tr.setAttribute('id','key_'+emp.employeeId);
+	        
+	        tr.addEventListener('click',trClick); //tr클릭하면 클릭함수
+	
+	        fields.forEach(field => {
+	            let td = document.createElement('td');
+	            td.innerText = emp[field];
+	            tr.append(td);
+	        })
+	        //삭제 버튼 생성
+	        td = document.createElement('td');
+            let bnt = document.createElement('button');
+	        bnt.innerHTML='삭제';
+	        
+	        
+	        //삭제 버튼
+	        bnt.addEventListener('click',function(e){
+	        	e.stopPropagation();
+	            let empId = this.parentNode.children[0].innerText;
+	            fetch('../AjaxPracticeServlet',{
+	                method:'post',
+	                headers:{'Content-type':'application/x-www-form-urlencoded'},
+	                body:`cmd=delete&empId=${empId}`
+	            })
+	        	this.parentNode.remove();
+	        });
+	        td.append(bnt);
+	        tr.append(td);
+			
+	        //체크 박스
+	        td = document.createElement('td');
+	        let cb = document.createElement('input');
+	        cb.setAttribute('type','checkbox');
+	        cb.setAttribute('id','cb');
+	        td.addEventListener('click',function(e){
+	        	e.stopPropagation();
+	        })
+	        td.append(cb);
+	        tr.append(td);
+	        
+	        return tr;
+	    }
+	    function trClick(){
+	        myform.empId.value = this.children[0].innerText;
+	        myform.fname.value=this.children[1].innerText;
+	        myform.lname.value=this.children[2].innerText;
+	        myform.email.value= this.children[3].innerText;
+	        myform.hdate.value=this.children[4].innerText.substring(0,10);
+	        myform.job.value=this.children[5].innerText;
+	    }
+	    
+	    //선택 삭제
+		document.getElementById('selDel').addEventListener('click',function(e){
+	        let cbb = document.querySelectorAll('#cb');
+	        cbb.forEach(val => {
+	        	if(val.checked){
+	        		let empId = val.parentNode.parentNode.children[0].innerText;
+	        		fetch('../AjaxPracticeServlet',{
+	        			method:'post',
+	        			headers:{'Content-type':'application/x-www-form-urlencoded'},
+	        			body:`cmd=delete&empId=${empId}`
+	        		})
+	        		val.parentNode.parentNode.remove();
+	        	}
+	        })
+
+        
+    })
+
+    </script>
 </body>
 </html>

@@ -47,7 +47,6 @@ public class EmpDAO extends DAO{
 			rs = psmt.executeQuery();
 			if(rs.next()) {
 				nextSeq = rs.getInt(1);
-				System.out.println(rs);
 			}
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, nextSeq);
@@ -91,6 +90,22 @@ public class EmpDAO extends DAO{
 		return null;
 	}
 	//Delete
+	public String deleteEmp(Employee emp) {
+		connect();
+		String sql = "delete emp_table where employee_id=?";
+		try {
+			psmt = conn.prepareStatement(sql);	
+			psmt.setInt(1, emp.getEmployeeId());
+			psmt.executeUpdate();
+			System.out.println("delete 완료");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			disconnect();
+		}
+		return null;
+	}
 	
 	//1건 조회
 

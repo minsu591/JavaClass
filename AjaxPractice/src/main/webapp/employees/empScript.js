@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded',function(){
     xhtp.open('get','../ajaxPractice.do?job=json');
     xhtp.send();
     xhtp.onload = function(){
-        console.log(xhtp.responseText);
         let data = JSON.parse(xhtp.responseText); //Json으로 들어온걸 배열로 변경
         let bodyList = document.getElementById('showList');
         data.forEach(emp => {
@@ -28,15 +27,32 @@ document.addEventListener('DOMContentLoaded',function(){
     })
 
     function ajaxPost(callBackFnc){
-        let fname = myform.fname.value;
-        let lname = myform.lname.value;
-        let email = myform.email.value;
-        let job = myform.job.value;
-        let hdate = myform.hdate.value;
-        let cmd = myform.cmd.value;
-        let empId = myform.empId.value;
         //form으로부터 정보를 가져와서 파라미터로 저장
-        let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}&empId=${empId}`;
+        //=> FormData 이용
+        let fd = new FormData(myform); //가져오고싶은 formData삽입
+        let params = [];
+        for(let data of fd.entries()){//entries => {key:value,key:value}
+            params.push
+            params.add(`${data[0]}=${data[1]}`);
+        }
+        let param = params.join('&');
+        console.log(param);
+
+
+        //선택삭제
+    document.getElementById('selDel').addEventListener('click',function(e){
+        let cb = document.querySelectorAll('#cb');
+        console.log(cb);
+        let check = cb.reduce((accum,val) => {
+            if(val.checked=true){
+                accum.push(val);
+            }
+            return accum;
+        },[])
+        console.log(check);
+        
+    })
+
         
         //파라미터를 Servlet으로 보내는 기능
         let xhtp = new XMLHttpRequest();
@@ -44,13 +60,20 @@ document.addEventListener('DOMContentLoaded',function(){
         xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
         xhtp.send(param); //한 줄로 정리한 param을 Servlet으로 전송
 
+        fetch('../ajaxPractice.do',{
+            method:'post',
+            headers:{'Content-type':'application/x-www-form-urlencoded'},
+            body:param
+        }).then(result => result.json)
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+
         //xhtp가 load되면 (이벤트)
         xhtp.onload = callBackFnc;
     }
 
     function addCallBack(e){
         //응답된 텍스트를 JSON형태로 바꿔서 전달 후 추가
-        console.log(e.target.responseText);
         let data = JSON.parse(e.target.responseText);
         document.getElementById('showList').append(makeTr(data));
     }

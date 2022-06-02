@@ -55,7 +55,6 @@ public class AjaxPracticeServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		doGet(request, response);
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
@@ -75,24 +74,25 @@ public class AjaxPracticeServlet extends HttpServlet {
 		emp.setHireDate(hdate);
 		emp.setEmail(email);
 		emp.setJobId(job);
-		System.out.println(empId);
-		emp.setEmployeeId(200);
 		
 		if(cmd.equals("insert")) {
 			EmpDAO dao = new EmpDAO();
 			dao.insertEmp(emp);
 		}else if(cmd.equals("update")) {
+			emp.setEmployeeId(Integer.parseInt(empId));
 			EmpDAO dao = new EmpDAO();
-			
 			if(dao.modifyEmp(emp)==null) {
 				System.out.println("error");
 			}else {
 				dao.modifyEmp(emp);
 			}
+		}else if(cmd.equals("delete")) {
+			emp.setEmployeeId(Integer.parseInt(empId));
+			EmpDAO dao = new EmpDAO();
+			dao.deleteEmp(emp);
 		}
 		Gson gson = new GsonBuilder().create();
 		response.getWriter().print(gson.toJson(emp));
-		
 	}
 
 }
