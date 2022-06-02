@@ -39,6 +39,7 @@
   		<tbody id = "list"></tbody>
   	</table>
   </div>
+  
   <script>
 	  let myform = document.forms.frm;
 	  // submit : 저장
@@ -52,16 +53,26 @@
           document.getElementById('list').append(makeTr(data));
 	  }
 	  
-	  function ajaxPost(callBackFnc){
-		  	let fname = myform.fname.value;
+	  function ajaxPost(callBackFnc){ //form의 데이터를 넘
+		  	/*let fname = myform.fname.value;
 		    let lname = myform.lname.value;
 		    let email = myform.email.value;
 		    let job = myform.job.value;
 		    let hdate = myform.hdate.value;
 		    let cmd = myform.cmd.value;
-		    let empId = myform.empId.value;
+		    let empId = myform.empId.value;*/
 		    
-		    let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}&empId=${empId}`;
+		    //formData로 가져오는 방법 => empId는 update 부분에서 설정
+		    let formData = new FormData(myform);
+		    let params = []; //배열 안에 배열 형식으로 데이터가 불러와지게 [[],[],...]
+		    //가져오진 formData는 formData객체
+		    for(let data of formData.entries()){ //formData의 entries의 데이터를 key와 value 형식으로 보여줌
+		    	console.log(data[0]+"="+data[1]); // [[key=value],[key=value],...]
+		    	params.push(`${data[0]}=${data[1]}`);
+		    }
+		    let param = params.join('&'); //배열의 값들이 &로 연결됨
+		    
+		    //let param = `cmd=${cmd}&fname=${fname}&lname=${lname}&email=${email}&job=${job}&hdate=${hdate}&empId=${empId}`;
 		    let xhtp = new XMLHttpRequest();
 		    xhtp.open("post",'../ajax.do');
 		    xhtp.setRequestHeader('Content-type','application/x-www-form-urlencoded'); //header정보에 지금 컨텐츠의 타입을 정해줌 (post일 경우만)
@@ -79,7 +90,6 @@
 	  xhtp.open('get','../ajax.do?job=json');
 	  xhtp.send();
 	  xhtp.onload = function() { //처음 실행할 때
-	      console.log(xhtp.responseText);
 	      let data = JSON.parse(xhtp.responseText);
 	      let bodyList = document.getElementById('list');
 	      data.forEach(emp => {

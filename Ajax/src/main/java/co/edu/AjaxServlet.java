@@ -71,7 +71,6 @@ public class AjaxServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-//		doGet(request, response);
 		request.setCharacterEncoding("utf-8"); //요청할 때 변환
 		response.setCharacterEncoding("utf-8"); //요청 받을 때 변환
 		response.setContentType("text/html;charset=utf-8");
@@ -92,13 +91,13 @@ public class AjaxServlet extends HttpServlet {
 		emp.setHireDate(hdate);
 		emp.setEmail(email);
 		emp.setJobId(job);
-		emp.setEmployeeId(Integer.parseInt(empId));
 		
 		if(cmd.equals("insert")) {
 			EmpDAO dao = new EmpDAO();
 			dao.empInsert(emp);
 			
 		}else if(cmd.equals("update")) {
+			emp.setEmployeeId(Integer.parseInt(empId));
 			EmpDAO dao = new EmpDAO();
 			
 			if(dao.empUpdate(emp) == null) {
@@ -106,6 +105,11 @@ public class AjaxServlet extends HttpServlet {
 			}else {
 				dao.empUpdate(emp);
 			}
+			
+		}else if(cmd.equals("delete")) {
+			emp.setEmployeeId(Integer.parseInt(empId));
+			EmpDAO dao = new EmpDAO();
+			dao.deleteEmp(emp);
 			
 		}
 		//null일 때 

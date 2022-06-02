@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	google.charts.load('current', {
+		'packages' : [ 'corechart' ]
+	});
+	google.charts.setOnLoadCallback(drawChart);
+
+	function drawChart() {//result값이 생성된 후 실행되게
+		//[[],[],[],...] 형태 , 가장 처음에는 항목에 대한 설명이 필요
+		let result = [];
+		let xhtp = new XMLHttpRequest();
+		xhtp.open('get', '../ChartServlet');
+		xhtp.send(); //이걸 호출해야지 시작
+		xhtp.onload = function() {
+			let d = JSON.parse(xhtp.responseText); //Object타입 (페이지에서 넘겨주는)
+			result.push([ "부서명", "부서인원" ]);
+			for ( let field in d) {
+				result.push([ field, d[field] ]);
+			}
+			var data = google.visualization.arrayToDataTable(result);
+			var options = {
+				title : '부서별 인원수'
+			};
+
+			var chart = new google.visualization.PieChart(document
+					.getElementById('piechart'));
+			chart.draw(data, options);
+		}
+
+	}
+</script>
+</head>
+<body>
+	<div id="piechart" style="width: 900px; height: 500px;"></div>
+</body>
+</html>
