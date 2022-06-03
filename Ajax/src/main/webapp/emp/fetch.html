@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>emp 화면</title>
+</head>
+
+<body>
+  <form name = "frm" action="../ajax.do" method="post">
+  	<!-- (ajax.do "get") form의 기본 기능 : ajax.do로 가는 -->
+    fist_name : <input type="text" name="fname"><br>
+    last_name : <input type="text" name="lname"><br>
+    email : <input type="email" name="email"><br>
+    hire_date : <input type="date" name="hdate"><br>
+    job_id : <input type="text" name="job" value="IT_PROG"><br>
+    <input type="hidden" name="cmd" value="insert"> 
+    <input type = "hidden" name ="empId">
+    <input type="submit" value="저장">
+    <input type="reset" value="취소">
+    <input type="button" id="modify" value="수정">
+  </form>
+
+  <h3>사원리스트</h3>
+  <div id="show">
+  	<table border =1>
+  		<thead>
+  			<tr>
+  				<th>사원번호</th>
+  				<th>이름</th>
+  				<th>성</th>
+  				<th>이메일</th>
+  				<th>입사일</th>
+  				<th>직무</th>
+  				<th>기능</th>
+  			</tr>
+  		</thead>
+  		<tbody id = "list"></tbody>
+  	</table>
+  </div>
+  
+  <script>
+  	  let myform = document.forms.frm;
+	  let promise = new Promise(function(resolve, reject){
+		  setTimeout(e=> {
+			  reject('success');
+		  },2000);
+	  });
+	  //promise 객체가 가질 수 있는 속성값 fullfilled : 정상 처리, pending : 처리중, rejected : 실패한 처리
+	  //Promis 코드 내의 함수가
+	  //.then() => 정상실행되었을 때
+	  //.catch() => 예외가 발생했을 때 실행할 메소드
+	  promise.then(function(result){ // => resolve
+		  console.log(result);
+	  }).catch(function(err){ //=> reject
+		  console.error(err);
+	  });
+	  
+	  //Promise 객체를 리턴해주는 fetch
+	  //fetch(url,{속성})로 select
+	  fetch('../AjaxServlet?job=json')
+	  		.then(result => result.json()
+	  			//stream() => json
+	  			//then을 통해 출력되는 값도 Promise타입으로 출력되기 때문에 그 뒤에 또 .then을 사용할 수 있음
+	  		).then(json => showList(json)
+	  		).catch(function(err){
+	  			console.log(err);
+	  		})
+	  function showList(json){
+			let list = document.getElementById('list');
+			for(let i =0; i<json.length;i++){
+				list.append(makeTr(json[i]));
+			}
+	  }
+	  
+	  //modify: 변경
+	  document.getElementById('modify').addEventListener('click',modifyFnc);
+	  function modifyFnc(e){
+		  let myform = document.forms.frm;
+		  myform.cmd.value = 'update'; //cmd의 값을 update로 변경
+		  let param = makeParam();
+	      fetch('../AjaxServlet',{
+			  method : 'post',
+			  headers : {'Content-Type':'application/x-www-form-urlencoded'},
+			  body : param
+		  })
+		  	.then(resut => resut.json())
+		  	.then(result => {
+		  		let oldTr = document.getElementById('key_'+result.employeeId);
+		        let newTr = makeTr(result);
+		        oldTr.parentNode.replaceChild(newTr,oldTr);
+		        //oldTr.replaceWith(newTr);
+		  	})
+		  	.catch(err => console.log(err))
+	  }
+	  
+	  //submit : 저장
+	  myform.addEventListener('submit',submitFnc);
+	  function submitFnc(e){
+		  e.preventDefault();
+		  let param = makeParam();
+		  //fetch로 insert	  
+		  fetch('../AjaxServlet',{
+			  method : 'post',
+			  headers : {'Content-Type':'application/x-www-form-urlencoded'},
+			  body : param
+		  })
+		  	.then(resut => resut.json()) //응답이 오면 응답의 json을 리턴
+		  	.then(result => { //json을 받아서
+		  		document.getElementById('list').append(makeTr(result));
+		  	}) //여기에 추가되도록하는 기능
+		  	.catch(err => console.log(err))
+	  }
+	  
+	  function makeParam(){
+		  let formData = new FormData(myform);
+		  let params = [];
+		  for(let data of formData.entries()){
+			  params.push(`${data[0]}=${data[1]}`);
+		  }
+		  return params.join('&');
+	  }
+	  
+	  
+	  //==================
+	  let fields = ['employeeId','firstName','lastName','email','hireDate','jobId'];
+	  //데이터 한 건 입력
+	  function makeTr(emp){
+	      let tr = document.createElement('tr');
+	      tr.setAttribute('id','key_'+emp.employeeId);
+	      tr.addEventListener('click',trClick);
+	      fields.forEach(field => {
+	          let td = document.createElement('td');
+	          td.innerText = emp[field];
+	          tr.append(td);
+	      })
+	      let delBtn = document.createElement('input');
+	      delBtn.setAttribute('type','button');
+	      delBtn.setAttribute('value','삭제');
+	      delBtn.addEventListener('click',delBtnFnc);
+	      tr.append(delBtn);
+	      return tr;
+	  }
+	  //삭제 버튼
+	  function delBtnFnc(e){
+		e.stopPropagation();
+		let empId = this.parentNode.children[0].innerText;
+		  fetch('../AjaxServlet',{
+			  method : 'post',
+			  headers : {'Content-Type':'application/x-www-form-urlencoded'},
+			  body : `cmd=delete&empId=${empId}`
+		  })
+		  .then(result => {
+			  this.parentNode.remove();
+		  })
+		  .catch(re => {
+			  console.log("삭제 실패");
+		  })
+	  }
+	  
+	  function trClick(){
+		    //tr클릭 => this.tr
+		    myform.empId.value=this.children[0].innerText;
+		    myform.fname.value=this.children[1].innerText;
+		    myform.lname.value=this.children[2].innerText;
+		    myform.email.value= this.children[3].innerText;
+		    myform.hdate.value=this.children[4].innerText.substring(0,10);
+		    myform.job.value=this.children[5].innerText;
+	   }
+
+  </script>
+</body>
+
+</html>
