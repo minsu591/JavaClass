@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.mia.prj.student.service.StudentMapper"> <!-- 인터페이스명을 작성 -->
+	<select id="studentSelectList" resultType="co.mia.prj.student.vo.StudentVO">
+		SELECT * FROM STUDENT
+	</select>
+	
+	<select id="studentSelect">
+
+	</select>
+	
+	<insert id="studentInsert">
+	
+	</insert>
+	
+	<update id="studentUpdate">
+	
+	</update>
+	
+	<delete id="studentDelete">
+	
+	</delete>
+	
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- xml 파일임을 알려주는 구문 -->
+<!-- xml dtd 구문 (servlet 3.1로 사용할거기 때문에 3.1로 잡아주어야함)-->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+	
+	<servlet>
+		<servlet-name> First </servlet-name>
+		<servlet-class>co.mia.prj.First</servlet-class>
+	</servlet>
+	
+	<!-- 어떻게 들어오면 이렇게 시키겠다. -->
+	<servlet-mapping>
+		<servlet-name>First</servlet-name>
+		<url-pattern>/First</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- 처음 방문했을 때 요청이 들어오면 이 페이지를 보여주겠다 -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

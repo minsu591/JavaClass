@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      
+      <dataSource type="POOLED">
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="dbc:oracle:thin:@localhost:1521:xe"/>
+        <property name="username" value="micol"/>
+        <property name="password" value="micol"/>
+      </dataSource>
+      
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="co/mia/prj/student/service/student-map.xml"/> <!-- 물리적인 위치기 때문에 /로 연결 -->
+    
+  </mappers>
+</configuration>
