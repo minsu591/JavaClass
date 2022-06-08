@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="config/db.properties" />
+	<settings>
+		<setting name ="jdbcTypeForNull" value="NULL"/> <!-- 칼럼에 빈 값이 들어가면 NULL값으로 인식, NULL에러 방지 -->
+	</settings>
+	<environments default="development">
+		<environment id="development">
+			<!-- 자바로 연결된다 -->
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${user}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="co/mia/study/notice/service/notice-map.xml" />
+		<mapper resource="co/mia/study/student/service/student-map.xml"/>
+	</mappers>
+</configuration>

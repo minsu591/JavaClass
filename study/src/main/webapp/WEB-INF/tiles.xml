@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+  <definition name="myapp.homepage" template="/WEB-INF/views/layout/layout.jsp">
+    <put-attribute name="title" value="My Web" />
+    <put-attribute name="menu" value="/WEB-INF/views/layout/menu.jsp" />
+    <put-attribute name="body" value="" />
+    <put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+  </definition>
+  
+  <!-- wildcar:*/* => 첫번째 *는 {1}에, 두번째 *는 {2}에 들어가게한다. -->
+  <!-- 위의 definition을 상속받는다 -->
+  <definition name="WILDCARD:*/*" extends="myapp.homepage">
+  	<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+  
+  </definition>
+</tiles-definitions>

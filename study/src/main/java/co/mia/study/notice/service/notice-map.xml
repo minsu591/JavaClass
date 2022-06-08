@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.mia.study.notice.service.NoticeMapper">
+
+	<select id="noticeSelectList"
+		resultType="co.mia.study.notice.vo.NoticeVO">
+		SELECT * FROM NOTICE ORDER BY ID DESC
+	</select>
+
+	<select id="noticeSearchList" parameterType="String"
+		resultType="co.mia.study.notice.vo.NoticeVO">
+		select * from notice
+		where
+		<!-- 전체검색 -->
+		<if test="key == 1"> 1 = 1 </if>
+		<!-- 제목검색 -->
+		<if test="key == 2">TITLE LIKE '%'|| #{VAL}||'%'</if>
+		<if test="key == 3">SUBJECT LIKE '%'||#{VAL}||'%'</if>
+	</select>
+
+	<select id="noticeSelectOne"
+		parameterType="co.mia.study.notice.vo.NoticeVO"
+		resultType="co.mia.study.notice.vo.NoticeVO">
+		select * from notice where id = #{id}
+	</select>
+
+	<insert id="noticeInsert"
+		parameterType="co.mia.study.notice.vo.NoticeVO">
+		insert into notice
+		values(b_id.nextval,#{writer},#{title},#{subject},#{wdate},0)
+	</insert>
+
+	<update id="noticeUpdate"
+		parameterType="co.mia.study.notice.vo.NoticeVO">
+		update notice
+		<set>
+			<if test="writer !=null">writer = #{writer},</if>
+			<if test="title != null">title = #{title},</if>
+			<if test="subject != null">subject = #{subject},</if>
+			<if test="wdate != null">wdate = #{wdate)</if>
+		</set>
+		where id = #{id}
+
+
+	</update>
+
+	<delete id="noticeDelete"
+		parameterType="co.mia.study.notice.vo.NoticeVO">
+		delete from notice where id = #{id};
+	</delete>
+
+	<update id="noticeHitUpdate" parameterType="int">
+		update notice set hit
+		= hit+1;
+		where id= ${id};
+	</update>
+
+</mapper>
