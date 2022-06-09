@@ -9,7 +9,10 @@
 <body>
 	<div align="center">
 		<div><h1>${message }</h1></div>
+		<div><h1>${student.studentId }</h1></div>
+		<div><h1>${student.name }</h1></div>
+		<div><h1>${student.author }</h1></div>
+		<div><h1>${student.address }</h1></div>
 	</div>
-
 </body>
 </html>

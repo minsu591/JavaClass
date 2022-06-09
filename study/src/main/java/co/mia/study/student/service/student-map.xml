@@ -6,7 +6,7 @@
 	</select>
 	
 	<select id="studentSelect" resultType = "co.mia.study.student.vo.StudentVO">
-		SELECT * FROM STUDENT
+		SELECT STUDENT_ID AS STUDENTID, NAME, BIRTHDAY, MAJOR, ADDRESS, TEL, AUTHOR, PASSWORD FROM STUDENT
 		WHERE STUDENT_ID = #{studentId}
 		<if test="password != null">
 			AND PASSWORD = #{password}
