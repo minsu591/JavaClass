@@ -1,15 +1,15 @@
-package co.mia.study.home;
+package co.mia.bootstraptest.home;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import co.mia.study.comm.Command;
+import co.mia.bootstraptest.comm.Command;
 
-public class HomeCommand implements Command {
+public class Home implements Command {
 
 	@Override
 	public String exec(HttpServletRequest request, HttpServletResponse response) {
-		return "home/home4";
+		return "home/home";
 	}
 
 }

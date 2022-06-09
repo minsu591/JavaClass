@@ -52,13 +52,13 @@
 													Me</label>
 											</div>
 										</div>
-										<!-- <a href="index.html"
+										<!-- <a href="home.do"
 											class="btn btn-primary btn-user btn-block"> Login </a> -->
-										<button type="submit" class="btn-primary" value="login">Login</button>
+										<button type="submit" class="btn btn-primary btn-user btn-block" value="login">Login</button>
 										<hr>
-										<a href="index.html" class="btn btn-google btn-user btn-block">
+										<a href="#" class="btn btn-google btn-user btn-block">
 											<i class="fab fa-google fa-fw"></i> Login with Google
-										</a> <a href="index.html"
+										</a> <a href="#"
 											class="btn btn-facebook btn-user btn-block"> <i
 											class="fab fa-facebook-f fa-fw"></i> Login with Facebook
 										</a>
