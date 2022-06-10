@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="co.mia.bootstraptest.notice.service.NoticeMapper">
+
+	<select id="noticeSelectList"
+		resultType="co.mia.bootstraptest.notice.vo.NoticeVO">
+		SELECT * FROM NOTICE
+		ORDER BY ID DESC
+	</select>
+
+	<select id="noticeSearchList"
+		resultType="co.mia.bootstraptest.notice.vo.NoticeVO">
+		SELECT * FROM NOTICE
+		WHERE
+		<!-- 전체 검색 -->
+		<if test="key == 1"> 1 = 1</if>
+		<if test="key == 2"> WRITER = #{val}</if>
+		<if test="key == 3"> TITLE LIKE '%'||#{val}||'%'</if>
+		<if test="key == 4"> SUBJECT LIKE '%'||#{val}||'%'</if>
+		ORDER BY ID DESC
+		
+	</select>
+
+	<select id="noticeSelect"
+		resultType="co.mia.bootstraptest.notice.vo.NoticeVO">
+		select * from notice where id = #{id}
+	</select>
+
+	<insert id="noticeInsert" parameterType="co.mia.bootstraptest.notice.vo.NoticeVO">
+		INSERT INTO NOTICE
+		VALUES(b_id.nextval,#{writer},#{title},#{subject},#{wdate},#{hit},#{fileName},#{dirFileName})
+	</insert>
+
+	<update id="noticeUpdate" parameterType="co.mia.bootstraptest.notice.vo.NoticeVO">
+		update notice
+		set
+		
+		where id = #{id}
+		
+	</update>
+
+	<delete id="noticeDelete" parameterType="co.mia.bootstraptest.notice.vo.NoticeVO">
+		delete notice
+		where id = #{id}
+	</delete>
+
+	<update id="noticeHitUpdate" parameterType="int">
+		update notice
+		set hit = hit+1
+		where id=#{id}
+	</update>
+</mapper>

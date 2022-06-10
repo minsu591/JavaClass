@@ -7,10 +7,12 @@
 <title>Insert title here</title>
 </head>
 <body>
-<div align="center">
-	<div><h1>여기가 시작하는 곳</h1></div>
-	<a href="noticeList.do">게시글 목록</a>
-</div>
-
+	<div align="center">
+	
+		<h1>${message}</h1>
+		<button type="button" onclick="location.href='noticeList.do'">목록으로</button>
+	
+	</div>
+	
 </body>
 </html>
