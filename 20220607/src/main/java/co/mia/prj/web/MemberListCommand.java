@@ -25,6 +25,7 @@ public class MemberListCommand implements Command {
 		StudentService dao = new StudentServiceImpl();
 		List<StudentVO> students = new ArrayList<StudentVO>();
 		students = dao.studentSelectList();
+		
 		request.setAttribute("students", students); //실행내역 객체 담고
 		return "member/member";
 	}

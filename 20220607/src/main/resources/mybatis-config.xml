@@ -9,15 +9,14 @@
       
       <dataSource type="POOLED">
         <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
-        <property name="url" value="dbc:oracle:thin:@localhost:1521:xe"/>
-        <property name="username" value="micol"/>
-        <property name="password" value="micol"/>
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+        <property name="username" value="hr"/>
+        <property name="password" value="hr"/>
       </dataSource>
       
     </environment>
   </environments>
   <mappers>
     <mapper resource="co/mia/prj/student/service/student-map.xml"/> <!-- 물리적인 위치기 때문에 /로 연결 -->
-    
   </mappers>
 </configuration>
